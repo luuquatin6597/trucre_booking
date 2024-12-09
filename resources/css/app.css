@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Petrona";
+    src: url("../../public/assets/font/Petrona-Font.ttf") format("truetype");
+}
+
+@layer base {
+    body {
+        color: theme("colors.main");
+        font-size: theme("fontSize.base");
+        font-family: theme("fontFamily.sans");
+        line-height: 1;
+    }
+}
+
+.navigation .item:hover svg path {
+    fill: #fff;
+}
+
+/* clears the 'X' from Internet Explorer */
+input[type="search"]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+}
+input[type="search"]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* clears the 'X' from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
+
+.is-open {
+    width: 100%;
+    animation: open-search-bar 0.5s ease-in-out;
+}
+
+.search-bar {
+    width: 0;
+    visibility: hidden;
+    animation: none;
+    -webkit-transition: none;
+    transition: none;
+}
+
+.is-open .search-bar {
+    width: 100%;
+    visibility: visible;
+}
+
+.is-open .icon-search {
+    background-color: theme("colors.gray.100");
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+
+@keyframes open-search-bar {
+    0% {
+        width: 0;
+        margin-left: 100%;
+    }
+    100% {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+.btn path {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    fill: #fff;
+}

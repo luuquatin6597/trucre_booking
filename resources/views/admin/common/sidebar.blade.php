@@ -18,11 +18,11 @@ $menus = [
             ],
             [
                 'name' => 'Types of user',
-                'route' => '',
+                'route' => 'admin.typeaccount',
             ],
             [
                 'name' => 'Buildings',
-                'route' => '',
+                'route' => 'admin.owner-buildings',
             ],
             [
                 'name' => 'Certificates',

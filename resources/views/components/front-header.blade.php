@@ -56,9 +56,9 @@ $navList = [
                     <?php foreach ($navList as $navItem): ?>
                         <?php if(empty($navItem['child'])): ?>
                             <li class="item">
-                                <a 
-                                    class="flex items-center gap-[8px] text-title-1 font-bold px-[17px] py-[5px] transition ease-in-out duration-300 hover:bg-primary-300 hover:text-white rounded-full <?= $navItem['active'] ? 'bg-primary-300 text-white' : 'text-gray-500' ?>" 
-                                    href="<?= htmlspecialchars($navItem['url']) ?>" 
+                                <a
+                                    class="flex items-center gap-[8px] text-title-1 font-bold px-[17px] py-[5px] transition ease-in-out duration-300 hover:bg-primary-300 hover:text-white rounded-full <?= $navItem['active'] ? 'bg-primary-300 text-white' : 'text-gray-500' ?>"
+                                    href="<?= htmlspecialchars($navItem['url']) ?>"
                                     title="<?= htmlspecialchars($navItem['name']) ?>"
                                     <?= $navItem['active'] && 'aria-current="page"' ?>
                                 >
@@ -67,7 +67,7 @@ $navList = [
                             </li>
                         <?php else: ?>
                             <li class="item group relative dropdown">
-                                <div 
+                                <div
                                     class="flex items-center gap-[8px] text-title-1 font-bold px-[17px] py-[5px] cursor-default transition ease-in-out duration-300 hover:bg-primary-300 hover:text-white rounded-full <?= $navItem['active'] ? 'bg-primary-300 text-white' : 'text-gray-500' ?>"
                                     <?= $navItem['active'] && 'aria-current="page"' ?>
                                     aria-haspopup="true" aria-expanded="false"
@@ -78,9 +78,9 @@ $navList = [
                                 </div>
                                 <div class="group-hover:block dropdown-menu absolute hidden h-auto left-1/2 translate-x-[-50%] pt-[20px]">
                                     <div class="w-max max-w-[660px] flex flex-wrap bg-white rounded-20 p-20 gap-20 shadow-[2px_2px_30px_0px_rgb(0,0,0,0.15)]">
-                                        <? foreach ($navItem['child'] as $child): ?>
+                                        @foreach ($navItem['child'] as $child)
                                             <x-dropdown-menu :child="$child" />
-                                        <? endforeach; ?>
+                                        @endforeach
                                     </div>
                                 </div>
                             </li>

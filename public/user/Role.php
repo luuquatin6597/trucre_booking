@@ -20,5 +20,4 @@ class Role
         return $next($request);
     }
 
-
 }

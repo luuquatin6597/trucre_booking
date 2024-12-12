@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->enum('status', ['waiting', 'active', 'inactive'])->default('waiting');
 
             $table->timestamps();
-        });
+        };
     }
 
     /**

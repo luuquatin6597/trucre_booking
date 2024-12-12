@@ -2,6 +2,7 @@
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminRoomsController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BuildingController;
@@ -40,8 +41,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/buildings/add', [AdminController::class, 'addBuilding'])->name('admin.buildings.add');
     Route::put('/admin/buildings/{id}', [AdminController::class, 'updateBuilding'])->name('admin.buildings.update');
     Route::delete('/admin/buildings/{id}', [AdminController::class, 'deleteBuilding'])->name('admin.buildings.destroy');
+    Route::get('/admin/rooms', [AdminRoomsController::class, 'AdminRooms'])->name('admin.rooms');
 });
 
-
-
+Route::middleware(['auth', 'role:owner'])->group(function () {
+    Route::get('/owner', [OwnerController::class, 'OwnerDashboard'])->name('owner.dashboard');
+});
 

@@ -42,7 +42,7 @@ $navList = [
 
 <header class="fixed top-0 left-0 z-50 w-full bg-[rgb(255,255,255,0.9)]">
     <div class="container">
-        <div class="flex flex-wrap justify-between items-center mx-auto py-24">
+        <div class="flex flex-wrap justify-between items-center mx-auto py-[20px]">
             <div class="header-left w-[250px]">
                 <a href="{{ route('homepage')}}" class="flex items-center">
                     <picture>

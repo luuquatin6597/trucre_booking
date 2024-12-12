@@ -37,7 +37,7 @@ $menus = [
         'children' => [
             [
                 'name' => 'List rooms',
-                'route' => '',
+                'route' => 'admin.rooms',
             ],
             [
                 'name' => 'Categories',

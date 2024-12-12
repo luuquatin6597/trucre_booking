@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminRoomsController;
 use App\Http\Controllers\OwnerController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +26,10 @@ require __DIR__ . '/auth.php';
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'AdminUsers'])->name('admin.users');
+    Route::get('/admin/rooms', [AdminRoomsController::class, 'AdminRooms'])->name('admin.rooms');
 });
 
 Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/owner', [OwnerController::class, 'OwnerDashboard'])->name('owner.dashboard');
 });
+

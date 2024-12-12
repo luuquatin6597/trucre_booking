@@ -76,6 +76,17 @@ $steps = [
                     </div>
                 @endforeach
             </div>
+
+            <div class="flex justify-center">
+                <x-button-with-icon class="mt-[50px]">
+                    START YOUR JOURNEY
+                    <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M6.67693 5.39485C7.01164 5.72955 7.01164 6.27312 6.67693 6.60783L1.5358 11.749C1.20109 12.0837 0.657519 12.0837 0.322809 11.749C-0.0119 11.4143 -0.0119 10.8707 0.322809 10.536L4.85879 6L0.325487 1.46402C-0.00922234 1.12931 -0.00922234 0.585741 0.325487 0.251032C0.660196 -0.0836773 1.20376 -0.0836773 1.53847 0.251032L6.67961 5.39217L6.67693 5.39485Z"
+                            fill="white" />
+                    </svg>
+                </x-button-with-icon>
+            </div>
         </div>
     </div>
 </div>

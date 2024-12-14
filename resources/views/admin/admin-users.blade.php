@@ -1,115 +1,40 @@
 @extends('admin.index')
 @section('admin')
+<?php
+$gender = ['male' => 'male', 'female' => 'female'];
+$status = ['active' => 'active', 'inactive' => 'inactive'];
+$role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'owner'];
+?>
+
 <x-admin-breadcrumb title="Users" subtitle="List users" link="admin.users" />
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Add user</button>
-<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('admin.users.add') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName"
-                            placeholder="Enter first name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName"
-                            placeholder="Enter last name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dayOfBirth">Day of Birth</label>
-                        <input type="date" class="form-control" id="dayOfBirth" name="dayOfBirth" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">Gender</label>
-                        <select class="form-control" id="gender" name="gender" required>
-                            <option>male</option>
-                            <option>female</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="Enter address"
-                            required>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" id="country" name="country" placeholder="Enter country"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username"
-                            placeholder="Enter username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        <select class="form-control" id="role" name="role" required>
-                            <option>admin</option>
-                            <option>user</option>
-                            <option>staff</option>
-                            <option>owner</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select class="form-control" id="status" name="status" required>
-                            <option>active</option>
-                            <option>inactive</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="Enter password" required>
-                    </div>
+<x-modal-add route="admin.users.add" modalId="addUserModal" formId="addUserForm">
+    <x-input-group name="firstName" label="First Name" placeholder="Enter first name" type="text" required="true" />
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
+    <x-input-group name="lastName" label="Last Name" placeholder="Enter last name" type="text" required="true" />
 
-            </div>
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+    <x-input-group name="dayOfBirth" label="Day of Birth" placeholder="Enter Day of Birth" type="date"
+        required="true" />
 
-        </div>
-    </div>
-    <script>
-        document.querySelector('#saveButton').addEventListener('click', function () {
-            this.disabled = true;
-            this.textContent = 'Saving...';
-        });
-    </script>
-</div>
+    <x-select-group name="gender" label="Gender" :options="$gender" required="true" />
+
+    <x-input-group name="email" label="Email" placeholder="Enter email" type="text" required="true" />
+
+    <x-input-group name="phone" label="Phone" placeholder="Enter phone" type="text" required="true" />
+
+    <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
+
+    <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
+
+    <x-input-group name="username" label="Username" placeholder="Enter username" type="text" required="true" />
+
+    <x-select-group name="role" label="Role" :options="$role" required="true" />
+
+    <x-select-group name="status" label="Status" :options="$status" required="true" />
+
+    <x-input-group name="password" label="Password" placeholder="Enter password" type="password" required="true" />
+</x-modal-add>
+
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -160,13 +85,16 @@
                                     <td>{{ $user->updated_at }}</td>
                                     <td>
                                         <button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-target="#editUserModal{{ $user->id }}">Edit<i
-                                                class="mdi mdi-pencil"></i></button>
+                                            data-id="{{ $user->id }}"
+                                            data-action="{{ route('admin.users.update', $user->id) }}"
+                                            data-target="#editUserModal">
+                                            Edit
+                                        </button>
                                         <button type="button" class="btn btn-danger" data-toggle="modal"
-                                            data-target="#deleteUserModal_{{ $user->id }}">
+                                            data-target="#deleteUserModal" data-id="{{ $user->id }}"
+                                            data-action="{{ route('admin.users.destroy', $user->id) }}">
                                             Delete
                                         </button>
-
                                     </td>
                                 </tr>
                             @endforeach
@@ -177,115 +105,135 @@
         </div>
     </div>
 </div>
-@foreach($users as $user)
-    <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" role="dialog"
-        aria-labelledby="editUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName"
-                                value="{{ $user->firstName }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName"
-                                value="{{ $user->lastName }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dayOfBirth">Day of Birth</label>
-                            <input type="text" class="form-control" id="dayOfBirth" name="dayOfBirth"
-                                value="{{ $user->dayOfBirth }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <select class="form-control" id="gender" name="gender" required>
-                                <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Male</option>
-                                <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Female</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="{{ $user->phone }}"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" value="{{ $user->address }}"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="country">Country</label>
-                            <input type="text" class="form-control" id="country" name="country" value="{{ $user->country }}"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="role">Role</label>
-                            <select class="form-control" id="role" name="role" required>
-                                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
-                                <option value="staff" {{ $user->role == 'staff' ? 'selected' : '' }}>Staff</option>
-                                <option value="owner" {{ $user->role == 'owner' ? 'selected' : '' }}>Owner</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select class="form-control" id="status" name="status" required>
-                                <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endforeach
 
-@foreach ($users as $user)
-    <div class="modal fade" id="deleteUserModal_{{ $user->id }}" tabindex="-1" role="dialog"
-        aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete this user?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endforeach
+<x-modal-edit modalTitle="Edit user" modalId="editUserModal" formId="editUserForm">
+    <x-input-group name="firstName" label="First Name" placeholder="Enter first name" type="text" required="true" />
+
+    <x-input-group name="lastName" label="Last Name" placeholder="Enter last name" type="text" required="true" />
+
+    <x-input-group name="dayOfBirth" label="Day of Birth" placeholder="Enter Day of Birth" type="date"
+        required="true" />
+
+    <x-select-group name="gender" label="Gender" :options="$gender" required="true" />
+
+    <x-input-group name="email" label="Email" placeholder="Enter email" type="text" required="true" />
+
+    <x-input-group name="phone" label="Phone" placeholder="Enter phone" type="text" required="true" />
+
+    <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
+
+    <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
+
+    <x-input-group name="username" label="Username" placeholder="Enter username" type="text" required="true" />
+
+    <x-select-group name="role" label="Role" :options="$role" required="true" />
+
+    <x-select-group name="status" label="Status" :options="$status" required="true" />
+
+    <x-input-group name="password" label="Password" placeholder="Enter password" type="password" required="true" />
+</x-modal-edit>
+
+<div id="alert-container"></div>
+
+<x-modal-delete modalId="deleteUserModal" formId="deleteUserForm" modalTitle="Delete user">
+
+</x-modal-delete>
+
+<script>
+    $('#editUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Nút được nhấn
+        var userId = button.data('id'); // ID của user
+        var actionUrlTemplate = button.data('action');
+        var modal = $(this);
+
+        // Gửi request để lấy thông tin user
+        $.get(`/admin/users/${userId}`, function (user) {
+            // Điền thông tin user vào form
+            var dayOfBirth = user.dayOfBirth.split(' ')[0];
+
+            modal.find('[name="firstName"]').val(user.firstName);
+            modal.find('[name="lastName"]').val(user.lastName);
+            modal.find('[name="dayOfBirth"]').val(dayOfBirth);
+            modal.find('[name="gender"]').val(user.gender);
+            modal.find('[name="email"]').val(user.email);
+            modal.find('[name="phone"]').val(user.phone);
+            modal.find('[name="address"]').val(user.address);
+            modal.find('[name="country"]').val(user.country);
+            modal.find('[name="username"]').val(user.username);
+            modal.find('[name="role"]').val(user.role);
+            modal.find('[name="status"]').val(user.status);
+            // Cập nhật action cho form
+            modal.find('form').attr('action', actionUrlTemplate);
+        });
+    });
+
+    $('#editUserForm').submit(function (event) {
+        event.preventDefault(); // Ngăn submit form mặc định
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (response) {
+                $('#editUserModal').hide()
+                $('.modal-backdrop').remove()
+                $('body').removeClass('modal-open');
+                showAlert('success', 'User updated successfully.');
+            },
+            error: function (xhr) {
+                $('#editUserModal').modal('hide')
+                var error = xhr.responseJSON?.message || 'An error occurred!';
+                showAlert('danger', error);
+            }
+        });
+    });
+
+    $('#deleteUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Nút được nhấn
+        var userId = button.data('id'); // ID của user
+        var actionUrlTemplate = button.data('action');
+        var modal = $(this);
+
+        modal.find('form').attr('action', actionUrlTemplate);
+    })
+
+    $('#deleteUserForm').submit(function (event) {
+        event.preventDefault();
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (response) {
+                $('#deleteUserModal').hide()
+                $('.modal-backdrop').remove(); // Xóa backdrop
+                $('body').removeClass('modal-open');
+                showAlert('success', 'User deleted successfully.');
+            },
+            error: function (xhr) {
+                $('#deleteUserModal').modal('hide');
+                var error = xhr.responseJSON?.message || 'An error occurred!';
+                showAlert('danger', error);
+            }
+        });
+    });
+
+    function showAlert(type, message) {
+        var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show" role="alert">
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                    <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
+                 </div>`;
+        $('#alert-container').html(alert); // Thêm alert vào container
+        setTimeout(function () {
+            $('.alert').alert('close'); // Đóng alert sau 5 giây
+        }, 5000);
+    }
+</script>
 
 @endsection

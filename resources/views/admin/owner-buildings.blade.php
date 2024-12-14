@@ -4,7 +4,8 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBuildingModal">Add Building</button>
 
 <!-- Add Building Modal -->
-<div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
+<div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -22,11 +23,13 @@
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <input type="text" class="form-control" id="description" name="description" placeholder="Enter Description" required>
+                        <input type="text" class="form-control" id="description" name="description"
+                            placeholder="Enter Description" required>
                     </div>
                     <div class="form-group">
                         <label for="address">address</label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" required>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="status">Status</label>
@@ -75,8 +78,6 @@
                                             data-target="#deleteBuildingModal{{ $building->id }}">Delete</button>
                                     </td>
                                 </tr>
-                                @include('admin.buildings.modals.edit', ['building' => $building])
-                                @include('admin.buildings.modals.delete', ['building' => $building])
                             @endforeach
                         </tbody>
                     </table>

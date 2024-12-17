@@ -13,6 +13,7 @@ class UserController extends Controller
 {
     public function showForm()
     {
+
         return view('register');
     }
     public function store(Request $request)

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminRoomsController;
 use App\Http\Controllers\AdminUsersController;
+use App\Http\Controllers\AdminBuildingsController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BuildingController;
@@ -26,12 +27,6 @@ require __DIR__ . '/auth.php';
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
-    Route::get('/admin/typeaccount', [AdminController::class, 'AdminTypeAccount'])->name('admin.typeaccount');
-    Route::get('/admin.owner.buildings', [AdminController::class, 'Bview'])->name('admin.owner-buildings');
-    Route::post('/admin/buildings/add', [AdminController::class, 'addBuilding'])->name('admin.buildings.add');
-    Route::put('/admin/buildings/{id}', [AdminController::class, 'updateBuilding'])->name('admin.buildings.update');
-    Route::delete('/admin/buildings/{id}', [AdminController::class, 'deleteBuilding'])->name('admin.buildings.destroy');
-    Route::get('/admin/rooms', [AdminRoomsController::class, 'AdminRooms'])->name('admin.rooms');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -40,9 +35,27 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/users/add', [AdminUsersController::class, 'addUser'])->name('admin.users.add');
     Route::put('/admin/users/{id}', [AdminUsersController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [AdminUsersController::class, 'deleteUser'])->name('admin.users.destroy');
+    Route::get('/admin/typeaccount', [AdminUsersController::class, 'AdminTypeAccount'])->name('admin.typeaccount');
 });
 
-Route::middleware(['auth', 'role:owner'])->group(function () {
+Route::middleware(['auth', 'role:admin,owner'])->group(function () {
+    Route::get('/admin/buildings', [AdminBuildingsController::class, 'AdminBuildings'])->name('admin.buildings');
+    Route::get('/admin/buildings/{id}', [AdminBuildingsController::class, 'getBuilding'])->name('admin.buildings.get');
+    Route::post('/admin/buildings/add', [AdminBuildingsController::class, 'addBuilding'])->name('admin.buildings.add');
+    Route::put('/admin/buildings/{id}', [AdminBuildingsController::class, 'updateBuilding'])->name('admin.buildings.update');
+    Route::delete('/admin/buildings/{id}', [AdminBuildingsController::class, 'deleteBuilding'])->name('admin.buildings.destroy');
+});
+
+Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::get('/owner', [OwnerController::class, 'OwnerDashboard'])->name('owner.dashboard');
+    Route::get('/admin/owner/autocomplete', [OwnerController::class, 'autocomplete'])->name('admin.owner.autocomplete');
+});
+
+Route::middleware(['auth', 'role:admin,owner'])->group(function () {
+    Route::get('/admin/rooms', [AdminRoomsController::class, 'AdminRooms'])->name('admin.rooms');
+    Route::get('/admin/rooms/{id}', [AdminRoomsController::class, 'getRoom'])->name('admin.rooms.get');
+    Route::post('/admin/rooms/add', [AdminRoomsController::class, 'addRoom'])->name('admin.rooms.add');
+    Route::put('/admin/rooms/{id}', [AdminRoomsController::class, 'updateRoom'])->name('admin.rooms.update');
+    Route::delete('/admin/rooms/{id}', [AdminRoomsController::class, 'deleteRoom'])->name('admin.rooms.destroy');
 });
 

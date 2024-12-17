@@ -8,7 +8,7 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
 
 <x-admin-breadcrumb title="Users" subtitle="List users" link="admin.users" />
 
-<x-modal-add route="admin.users.add" modalId="addUserModal" formId="addUserForm">
+<x-modal-add modalTitle="Add user" route="admin.users.add" modalId="addUserModal" formId="addUserForm">
     <x-input-group name="firstName" label="First Name" placeholder="Enter first name" type="text" required="true" />
 
     <x-input-group name="lastName" label="Last Name" placeholder="Enter last name" type="text" required="true" />
@@ -35,76 +35,67 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
     <x-input-group name="password" label="Password" placeholder="Enter password" type="password" required="true" />
 </x-modal-add>
 
-<div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="dataTableExample" class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>ID</th>
-                                <th>First name</th>
-                                <th>Last name</th>
-                                <th>Day of birth</th>
-                                <th>Gender</th>
-                                <th>Email</th>
-                                <th>Email verified at</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>Country</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Point</th>
-                                <th>Status</th>
-                                <th>Created at</th>
-                                <th>Updated at</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($users as $key => $user)
-                                <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $user->id }}</td>
-                                    <td>{{ $user->firstName }}</td>
-                                    <td>{{ $user->lastName }}</td>
-                                    <td>{{ $user->dayOfBirth }}</td>
-                                    <td>{{ $user->gender }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->email_verified_at }}</td>
-                                    <td>{{ $user->phone }}</td>
-                                    <td>{{ $user->address }}</td>
-                                    <td>{{ $user->country }}</td>
-                                    <td>{{ $user->username }}</td>
-                                    <td>{{ $user->role }}</td>
-                                    <td>{{ $user->point }}</td>
-                                    <td>{{ $user->status }}</td>
-                                    <td>{{ $user->created_at }}</td>
-                                    <td>{{ $user->updated_at }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-id="{{ $user->id }}"
-                                            data-action="{{ route('admin.users.update', $user->id) }}"
-                                            data-target="#editUserModal">
-                                            Edit
-                                        </button>
-                                        <button type="button" class="btn btn-danger" data-toggle="modal"
-                                            data-target="#deleteUserModal" data-id="{{ $user->id }}"
-                                            data-action="{{ route('admin.users.destroy', $user->id) }}">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<x-admin-table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Day of birth</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Email verified at</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Country</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Point</th>
+            <th>Status</th>
+            <th>Created at</th>
+            <th>Updated at</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if ($users->isEmpty())
+            <p>No buildings found.</p>
+        @else
+            @foreach ($users as $key => $user)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $user->id }}</td>
+                    <td>{{ $user->firstName }}</td>
+                    <td>{{ $user->lastName }}</td>
+                    <td>{{ $user->dayOfBirth }}</td>
+                    <td>{{ $user->gender }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->email_verified_at }}</td>
+                    <td>{{ $user->phone }}</td>
+                    <td>{{ $user->address }}</td>
+                    <td>{{ $user->country }}</td>
+                    <td>{{ $user->username }}</td>
+                    <td>{{ $user->role }}</td>
+                    <td>{{ $user->point }}</td>
+                    <td>{{ $user->status }}</td>
+                    <td>{{ $user->created_at }}</td>
+                    <td>{{ $user->updated_at }}</td>
+                    <td>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-id="{{ $user->id }}"
+                            data-action="{{ route('admin.users.update', $user->id) }}" data-target="#editUserModal">
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteUserModal"
+                            data-id="{{ $user->id }}" data-action="{{ route('admin.users.destroy', $user->id) }}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            @endforeach
+        @endif
+    </tbody>
+</x-admin-table>
 
 <x-modal-edit modalTitle="Edit user" modalId="editUserModal" formId="editUserForm">
     <x-input-group name="firstName" label="First Name" placeholder="Enter first name" type="text" required="true" />
@@ -135,9 +126,7 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
 
 <div id="alert-container"></div>
 
-<x-modal-delete modalId="deleteUserModal" formId="deleteUserForm" modalTitle="Delete user">
-
-</x-modal-delete>
+<x-modal-delete modalId="deleteUserModal" formId="deleteUserForm" modalTitle="Delete user"></x-modal-delete>
 
 <script>
     $('#editUserModal').on('show.bs.modal', function (event) {
@@ -235,5 +224,4 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
         }, 5000);
     }
 </script>
-
 @endsection

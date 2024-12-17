@@ -119,9 +119,12 @@ $navList = [
                                     Profile
                                 </a>
                                 <hr>
-                                <a href="{{ route('logout') }}" class="p-20 flex items-center justify-center">
-                                    Logout
-                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="p-20 flex items-center justify-center">
+                Logout
+            </button>
+        </form>
                                 @else
                                 <a href="{{ route('login') }}" class="p-20 flex items-center justify-center">
                                     Login

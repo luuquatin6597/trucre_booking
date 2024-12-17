@@ -72,7 +72,7 @@ License: For each use you must have a valid license purchased only from above li
             <x-common.header />
             <!-- partial -->
             <div class="page-content">
-                @yield('admin')
+                @yield('owner')
             </div>
 
             <!-- partial:partials/_footer.html -->

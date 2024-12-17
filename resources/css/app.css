@@ -80,3 +80,6 @@ input[type="search"]::-webkit-search-results-decoration {
     transition-duration: 200ms;
     fill: #fff;
 }
+.ui-autocomplete.ui-front {
+    z-index: 1060; /* Cao hơn modal */
+}

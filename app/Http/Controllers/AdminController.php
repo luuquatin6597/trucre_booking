@@ -18,23 +18,5 @@ class AdminController extends Controller
         $buildings = Building::all();
         return view('admin.owner-buildings', compact('buildings'));
     }
-    public function addBuilding(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'address' => 'required|string|max:2048',
-            'status' => 'required|in:waiting',
-        ]);
-
-        Building::create([
-            'name' => $validatedData['name'],
-            'description' => $validatedData['description'],
-            'address' => $validatedData['address'],
-            'status' => $validatedData['status'],
-        ]);
-
-        return redirect()->route('admin.owner-buildings')->with('success', 'Building added successfully.');
-    }
 
 }

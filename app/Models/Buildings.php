@@ -10,6 +10,7 @@ class Buildings extends Model
     protected $table = 'buildings';
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'address',

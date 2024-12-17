@@ -80,5 +80,3 @@ Route::get('/resend-otp', [UserController::class, 'resendOtp'])->name('resend.ot
 
 Route::get('/reset-password', [UserController::class, 'showResetPasswordForm'])->name('reset.password');
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('reset.password.post');
-
-Route::get('/homepage', [HomepageController::class, 'index'])->name('homepage');

@@ -14,15 +14,9 @@ class Role
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        //dd($roles); 
-        //is now an array with all the roles you provided to the route.
-
         if (!$request->user() || !in_array($request->user()->role, $roles)) {
-            // Redirect...
-
             return redirect()->route('homepage');
         }
-
         return $next($request);
     }
     // public function handle(Request $request, Closure $next, $roles): Response

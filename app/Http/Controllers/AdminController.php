@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use App\Models\Building;
+use App\Models\Buildings;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -15,7 +15,7 @@ class AdminController extends Controller
 
     public function Bview()
     {
-        $buildings = Building::all();
+        $buildings = Buildings::all();
         return view('admin.owner-buildings', compact('buildings'));
     }
 

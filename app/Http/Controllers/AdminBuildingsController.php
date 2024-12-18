@@ -36,7 +36,7 @@ class AdminBuildingsController extends Controller
             ]);
 
             Buildings::create([
-                'user_id' => $validatedData['user_id'], // Lưu user_id
+                'user_id' => $validatedData['user_id'],
                 'name' => $validatedData['name'],
                 'description' => $validatedData['description'],
                 'address' => $validatedData['address'],
@@ -45,9 +45,9 @@ class AdminBuildingsController extends Controller
                 'status' => $validatedData['status'],
             ]);
 
-            return redirect()->route('admin.admin-buildings')->with('success', 'Building added successfully.');
+            return redirect()->route('admin.buildings')->with('success', 'Building added successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.admin-buildings')->with('error', 'Failed to add building: ' . $e->getMessage());
+            return redirect()->route('admin.buildings')->with('error', 'Failed to add building: ' . $e->getMessage());
         }
     }
 }

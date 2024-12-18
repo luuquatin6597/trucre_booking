@@ -50,7 +50,7 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
 
 Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::get('/owner', [OwnerController::class, 'OwnerDashboard'])->name('owner.dashboard');
-    Route::get('/admin/owner/autocomplete', [OwnerController::class, 'autocomplete'])->name('admin.owner.autocomplete');
+    Route::get('/owner/autocomplete', [OwnerController::class, 'Autocomplete'])->name('owner.autocomplete');
 });
 
 Route::middleware(['auth', 'role:admin,owner'])->group(function () {

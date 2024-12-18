@@ -14,7 +14,7 @@ class OwnerController extends Controller
         return view('owner.owner-dashboard');
     }
 
-    public function autocomplete(Request $request)
+    public function Autocomplete(Request $request)
     {
         $term = $request->get('term');
         $users = User::where('role', 'owner')

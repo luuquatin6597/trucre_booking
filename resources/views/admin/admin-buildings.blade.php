@@ -4,21 +4,23 @@
 <x-admin-breadcrumb title="Buildings" subtitle="Add new building" link="admin.buildings" />
 
 <x-modal-add modalTitle="Add building" route="admin.buildings.add" modalId="addBuildingModal" formId="addBuildingForm">
-    <!-- <x-input-group name="userNameInput" label="User Name" placeholder="Enter user name" type="text" required="true" />
-    <input type="hidden" name="user_id" id="userIdInput" /> -->
-
-    <x-input-group name="owner" label="Owner" placeholder="Enter owner" type="text" required="true" readonly="true"
-        disabled="true"
-        value="{{ Auth::user()->id . ' - ' . Auth::user()->firstName . ' ' . Auth::user()->lastName }}" />
-    <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}" />
-    <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true" value="FPT Building" />
-    <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true"
-        value="Phổ thông Cao đẳng FPT Polytechnic Đà Nẵng" />
-    <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true"
-        value="137 Đường Nguyễn Thị Thập, Thanh Khê Tây, Liên Chiểu, Đà Nẵng" />
-    <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true"
-        value="Việt Nam" />
-    <x-textarea-group name="map" label="Map" placeholder="Enter map" required="true" value="This is map" />
+    @if (Auth::user()->role == 'owner')
+        <x-input-group name="owner" label="Owner" placeholder="Enter owner" type="text" required="true" readonly="true"
+            disabled="true"
+            value="{{ Auth::user()->id . ' - ' . Auth::user()->firstName . ' ' . Auth::user()->lastName }}" />
+        <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}" />
+    @elseif (Auth::user()->role == 'admin')
+        <div class="form-group">
+            <label for="user_id">Select user</label>
+            <input type="text" class="form-control" id="userNameInput" name="userNameInput" placeholder="Select user" />
+            <input type="hidden" name="user_id" id="user_id" />
+        </div>
+    @endif
+    <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true" />
+    <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
+    <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
+    <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
+    <x-textarea-group name="map" label="Map" placeholder="Enter map" required="true" />
     <input type="hidden" name="status" value="waiting" id="status" />
 </x-modal-add>
 
@@ -74,7 +76,7 @@
         $('#userNameInput').autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{{ route('admin.owner.autocomplete') }}",
+                    url: "{{ route('owner.autocomplete') }}",
                     data: { term: request.term },
                     success: function (data) {
                         response($.map(data, function (item) {
@@ -86,7 +88,6 @@
                         }));
                     },
                     error: function (xhr, status, error) {
-                        console.log(request)
                         console.error(error);
                     }
                 });
@@ -94,7 +95,7 @@
             appendTo: "#addBuildingModal",
             select: function (event, ui) {
                 $('#userNameInput').val(ui.item.value);
-                $('#userIdInput').val(ui.item.id);
+                $('#user_id').val(ui.item.id);
                 return false;
             },
             open: function () {

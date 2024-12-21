@@ -1,6 +1,9 @@
 @extends('admin.index')
 
 @section('admin')
+<?php
+$status = ['active' => 'active', 'inactive' => 'inactive'];
+?>
 <x-admin-breadcrumb title="Buildings" subtitle="Add new building" link="admin.buildings" />
 
 <x-modal-add modalTitle="Add building" route="admin.buildings.add" modalId="addBuildingModal" formId="addBuildingForm">
@@ -58,8 +61,14 @@
                     <td>{{ $building->map }}</td>
                     <td>{{ $building->status }}</td>
                     <td>
-                        <button type="button" class="btn btn-info">Edit</button>
-                        <button type="button" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-id="{{ $building->id }}"
+                            data-action="{{ route('admin.buildings.update', $building->id) }}" data-target="#editBuildingModal">
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteBuildingModal"
+                            data-id="{{ $building->id }}" data-action="{{ route('admin.buildings.destroy', $building->id) }}">
+                            Delete
+                        </button>
                     </td>
                 </tr>
             @endforeach
@@ -115,5 +124,109 @@
         }
     });
 </script>
+<x-modal-edit modalTitle="Edit Building" modalId="editBuildingModal" formId="editBuildingForm">
+    <x-input-group name="name" label="Name" placeholder="Enter building name" type="text" required="true" />
+    <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
+    <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
+    <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
+    <x-textarea-group name="map" label="Map" placeholder="Enter map link or embed code" required="true" />
+    <x-select-group name="status" label="Status" placeholder="Enter status" :options="$status" required="true" />
+</x-modal-edit>
+
+<x-modal-delete modalId="deleteBuildingModal" formId="deleteBuildingForm" modalTitle="Delete Building">
+    <p>Are you sure you want to delete this building?</p>
+</x-modal-delete>
+
+<script>
+
+    // Modal Edit Building
+    $('#editBuildingModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var buildingId = button.data('id');
+        var actionUrlTemplate = button.data('action');
+        var modal = $(this);
+
+        // Fetch building data
+        $.get(`/admin/buildings/${buildingId}`, function (building) {
+            modal.find('[name="name"]').val(building.name);
+            modal.find('[name="description"]').val(building.description);
+            modal.find('[name="address"]').val(building.address);
+            modal.find('[name="country"]').val(building.country);
+            modal.find('[name="map"]').val(building.map);
+            modal.find('[name="status"]').val(building.status);
+            modal.find('form').attr('action', actionUrlTemplate);
+        });
+    });
+
+    $('#editBuildingForm').submit(function (event) {
+        event.preventDefault();
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (response) {
+                $('#editBuildingModal').modal('hide');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+                showAlert('success', 'Building updated successfully.');
+            },
+            error: function (xhr) {
+                $('#deleteBuildingModal').modal('dispose');
+                var error = xhr.responseJSON?.message || 'An error occurred!';
+                showAlert('danger', error);
+            }
+        });
+    });
+
+    // Modal Delete Building
+    $('#deleteBuildingModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var buildingId = button.data('id');
+        var actionUrlTemplate = button.data('action');
+        var modal = $(this);
+
+        modal.find('form').attr('action', actionUrlTemplate);
+    });
+
+    $('#deleteBuildingForm').submit(function (event) {
+        event.preventDefault();
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (response) {
+                $('#deleteBuildingModal').modal('hide');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+                showAlert('success', 'Building deleted successfully.');
+            },
+            error: function (xhr) {
+                $('#deleteBuildingModal').modal('hide');
+                var error = xhr.responseJSON?.message || 'An error occurred!';
+                showAlert('danger', error);
+            }
+        });
+    });
+
+    function showAlert(type, message) {
+        var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show" role="alert">
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                    <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
+                 </div>`;
+        $('#alert-container').html(alert);
+        setTimeout(function () {
+            $('.alert').alert('close');
+        }, 5000);
+    }
+</script>
+
 
 @endsection

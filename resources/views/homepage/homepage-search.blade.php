@@ -1,9 +1,16 @@
-
+<?php
+$items = ['Indonesia', 'Malaysia', 'Singapore', 'Thailand'];
+$hashtags = ['#meetting_room', '#conference_room', '#ha_noi', '#da_nang', '#ho_chi_minh']
+?>
 
 <div class="pt-[250px] pb-100">
     <div class="container">
         <div class="columns-2 w-full">
             <div class="left relative">
+                <h1 class="font-petrona font-bold text-heading-1 text-primary-400 leading-none mb-[30px]">Get
+                    everything<br />you need
+                    in here!</h1>
+
                 <form
                     class="flex bg-white rounded-[38px] flex-wrap gap-24 p-24 shadow-[0px_0px_20px_0px_rgba(0,0,0,0.15)]"
                     action="">

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Building;
+use App\Models\Buildings;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -72,71 +72,71 @@ class AdminController extends Controller
 
         return redirect()->route('admin.users')->with('success', 'User updated successfully.');
     }
-function deleteUser($id)
-{
-    $user = User::findOrFail($id);
-     if ($user->status == 'active') {
-        $user->status = 'inactive';
-        $user->save();
+    function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+        if ($user->status == 'active') {
+            $user->status = 'inactive';
+            $user->save();
+        }
+        return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
+
     }
-    return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
 
-}
+    public function AdminTypeAccount()
+    {
+        $users = User::all()->groupBy('role');
+        return view('admin.admin-typeaccount', compact('users'));
+    }
 
-public function AdminTypeAccount()
-{
-    $users = User::all()->groupBy('role');
-    return view('admin.admin-typeaccount', compact('users'));
-}
+    public function index()
+    {
+        $buildings = Buildings::all();
+        return view('admin.buildings.index', compact('buildings'));
+    }
 
-public function index()
-{
-    $buildings = Building::all();
-    return view('admin.buildings.index', compact('buildings'));
-}
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'map' => 'required|string|max:255',
+        ]);
 
-public function store(Request $request)
-{
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string|max:255',
-        'address' => 'required|string|max:255',
-        'country' => 'required|string|max:255',
-        'map' => 'required|string|max:255',
-    ]);
+        Buildings::create($validatedData);
+        return redirect()->route('admin.buildings')->with('success', 'Tòa nhà đã được thêm thành công!');
 
-    Building::create($validatedData);
-    return redirect()->route('admin.buildings')->with('success', 'Tòa nhà đã được thêm thành công!');
+    }
 
-}
+    public function edit($id)
+    {
+        $building = Buildings::find($id);
+        return view('admin.edit-building', compact('building'));
+    }
 
-public function edit($id)
-{
-    $building = Building::find($id);
-    return view('admin.edit-building', compact('building'));
-}
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'map' => 'required|string|max:255',
+        ]);
 
-public function update(Request $request, $id)
-{
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string|max:255',
-        'address' => 'required|string|max:255',
-        'country' => 'required|string|max:255',
-        'map' => 'required|string|max:255',
-    ]);
+        $building = Buildings::find($id);
+        $building->update($validatedData);
 
-    $building = Building::find($id);
-    $building->update($validatedData);
+        return redirect()->route('admin.building.index')->with('success', 'Tòa nhà đã được cập nhật thành công!');
+    }
 
-    return redirect()->route('admin.building.index')->with('success', 'Tòa nhà đã được cập nhật thành công!');
-}
+    public function destroy($id)
+    {
+        $building = Buildings::find($id);
+        $building->delete();
 
-public function destroy($id)
-{
-    $building = Building::find($id);
-    $building->delete();
-
-    return redirect()->route('admin.building.index')->with('success', 'Tòa nhà đã được xóa thành công!');
-}
+        return redirect()->route('admin.building.index')->with('success', 'Tòa nhà đã được xóa thành công!');
+    }
 }

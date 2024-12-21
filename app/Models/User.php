@@ -11,23 +11,37 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
+
     protected $fillable = [
+        'username',
         'firstName',
         'lastName',
-        'dayOfBirth',
+        'dayofBirth',
         'gender',
+        'password',
         'email',
         'phone',
+        'photo',
         'address',
         'country',
-        'username',
         'role',
+        'point',
         'status',
-        'password',
+        'remember_token',
+        'created_at',
+        'updated_at',
+        'email_verified_at'
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token', // Ẩn các trường quan trọng khỏi JSON
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime', // Ép kiểu cho email_verified_at
     ];
 }

@@ -16,44 +16,39 @@ foreach ($buildings as $key => $building) {
     <x-admin-breadcrumb title="Rooms" subtitle="List rooms" link="admin.rooms" />
 
     <x-modal-add modalTitle="Add room" route="admin.rooms.add" modalId="addRoomModal" formId="addRoomForm">
-        <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true"
-            value="Meeting room" />
+        <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true" />
         <div class="flex">
-            <x-input-group name="startAt" label="Start At" placeholder="Enter start at" type="date" required="true"
-                value="2025-01-01" />
-            <x-input-group name="endAt" label="End At" placeholder="Enter end at" type="date" required="true"
-                value="2026-01-01" />
+            <x-input-group name="startAt" label="Start At" placeholder="Enter start at" type="date" required="true" />
+            <x-input-group name="endAt" label="End At" placeholder="Enter end at" type="date" required="true" />
         </div>
-        <x-input-group name="price" label="Price" placeholder="Enter price" type="number" required="true"
-            value="300000" />
+        <x-input-group name="price" label="Price" placeholder="Enter price" type="number" required="true" />
         <x-input-group name="comparePrice" label="Compare Price" placeholder="Enter compare price" type="number"
-            required="true" value="400000" />
+            required="true" />
         <div class="flex">
             <x-input-group name="weekPrice" label="Week Price" placeholder="Enter week price" type="number"
-                required="true" value="280000" />
+                required="true" />
             <x-input-group name="monthPrice" label="Month Price" placeholder="Enter month price" type="number"
-                required="true" value="260000" />
+                required="true" />
             <x-input-group name="yearPrice" label="Year Price" placeholder="Enter year price" type="number"
-                required="true" value="240000" />
+                required="true" />
         </div>
         <div class="flex">
             <x-input-group name="weekendPrice" label="Weekend Price" placeholder="Enter weekend price" type="number"
-                required="true" value="320000" />
+                required="true" />
             <x-input-group name="holidayPrice" label="Holiday Price" placeholder="Enter holiday price" type="number"
-                required="true" value="340000" />
+                required="true" />
         </div>
-        <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true"
-            value="Des" />
+        <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
         <div class="flex">
-            <x-input-group name="maxChair" label="Max Chair" placeholder="Enter max chair" type="number" required="true"
-                value="30" />
-            <x-input-group name="maxTable" label="Max Table" placeholder="Enter max table" type="number" required="true"
-                value="10" />
+            <x-input-group name="maxChair" label="Max Chair" placeholder="Enter max chair" type="number"
+                required="true" />
+            <x-input-group name="maxTable" label="Max Table" placeholder="Enter max table" type="number"
+                required="true" />
             <x-input-group name="maxPeople" label="Max People" placeholder="Enter max people" type="number"
-                required="true" value="30" />
+                required="true" />
         </div>
-        <x-textarea-group name="tags" label="Tags" placeholder="Enter tags" required="true" value="Meeting room" />
-        <x-textarea-group name="furniture" label="Furniture" placeholder="Enter furniture" required="true" value="TV" />
+        <x-textarea-group name="tags" label="Tags" placeholder="Enter tags" required="true" />
+        <x-textarea-group name="furniture" label="Furniture" placeholder="Enter furniture" required="true" />
 
         <div class="form-group">
             <label for="building">Select building</label>

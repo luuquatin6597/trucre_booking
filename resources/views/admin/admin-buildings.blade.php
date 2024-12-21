@@ -138,15 +138,12 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
 </x-modal-delete>
 
 <script>
-
-    // Modal Edit Building
     $('#editBuildingModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var buildingId = button.data('id');
         var actionUrlTemplate = button.data('action');
         var modal = $(this);
 
-        // Fetch building data
         $.get(`/admin/buildings/${buildingId}`, function (building) {
             modal.find('[name="name"]').val(building.name);
             modal.find('[name="description"]').val(building.description);
@@ -158,29 +155,29 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
         });
     });
 
-    $('#editBuildingForm').submit(function (event) {
-        event.preventDefault();
+    // $('#editBuildingForm').submit(function (event) {
+    //     event.preventDefault();
 
-        var form = $(this);
-        var url = form.attr('action');
+    //     var form = $(this);
+    //     var url = form.attr('action');
 
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(),
-            success: function (response) {
-                $('#editBuildingModal').modal('hide');
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                showAlert('success', 'Building updated successfully.');
-            },
-            error: function (xhr) {
-                $('#deleteBuildingModal').modal('dispose');
-                var error = xhr.responseJSON?.message || 'An error occurred!';
-                showAlert('danger', error);
-            }
-        });
-    });
+    //     $.ajax({
+    //         type: "POST",
+    //         url: url,
+    //         data: form.serialize(),
+    //         success: function (response) {
+    //             $('#editBuildingModal').modal('hide');
+    //             $('.modal-backdrop').remove();
+    //             $('body').removeClass('modal-open');
+    //             showAlert('success', 'Building updated successfully.');
+    //         },
+    //         error: function (xhr) {
+    //             $('#deleteBuildingModal').modal('dispose');
+    //             var error = xhr.responseJSON?.message || 'An error occurred!';
+    //             showAlert('danger', error);
+    //         }
+    //     });
+    // });
 
     // Modal Delete Building
     $('#deleteBuildingModal').on('show.bs.modal', function (event) {
@@ -192,29 +189,29 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
         modal.find('form').attr('action', actionUrlTemplate);
     });
 
-    $('#deleteBuildingForm').submit(function (event) {
-        event.preventDefault();
+    // $('#deleteBuildingForm').submit(function (event) {
+    //     event.preventDefault();
 
-        var form = $(this);
-        var url = form.attr('action');
+    //     var form = $(this);
+    //     var url = form.attr('action');
 
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(),
-            success: function (response) {
-                $('#deleteBuildingModal').modal('hide');
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                showAlert('success', 'Building deleted successfully.');
-            },
-            error: function (xhr) {
-                $('#deleteBuildingModal').modal('hide');
-                var error = xhr.responseJSON?.message || 'An error occurred!';
-                showAlert('danger', error);
-            }
-        });
-    });
+    //     $.ajax({
+    //         type: "POST",
+    //         url: url,
+    //         data: form.serialize(),
+    //         success: function (response) {
+    //             $('#deleteBuildingModal').modal('hide');
+    //             $('.modal-backdrop').remove();
+    //             $('body').removeClass('modal-open');
+    //             showAlert('success', 'Building deleted successfully.');
+    //         },
+    //         error: function (xhr) {
+    //             $('#deleteBuildingModal').modal('hide');
+    //             var error = xhr.responseJSON?.message || 'An error occurred!';
+    //             showAlert('danger', error);
+    //         }
+    //     });
+    // });
 
     function showAlert(type, message) {
         var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show" role="alert">

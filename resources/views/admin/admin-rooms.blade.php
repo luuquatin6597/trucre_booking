@@ -1,45 +1,101 @@
 @extends('admin.index')
 @section('admin')
+<?php
+use App\Models\Buildings;
+$buildings = Buildings::all();
+$options = [];
+foreach ($buildings as $key => $building) {
+    $options[$key] = [
+        'value' => $building->id,
+        'name' => $building->id . ' - ' . $building->name . ' - ' . $building->address
+    ];
+}
+?>
+
 <div class="relative">
     <x-admin-breadcrumb title="Rooms" subtitle="List rooms" link="admin.rooms" />
 
-    <x-modal-add modalTitle="Add room" route="admin.rooms.add" modalId="varyingModal" formId="varyingForm">
-        <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true" />
-
+    <x-modal-add modalTitle="Add room" route="admin.rooms.add" modalId="addRoomModal" formId="addRoomForm">
+        <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true"
+            value="Meeting room" />
         <div class="flex">
-            <x-input-group name="startAt" label="Start At" placeholder="Enter start at" type="date" required="true" />
-            <x-input-group name="endAt" label="End At" placeholder="Enter end at" type="date" required="true" />
+            <x-input-group name="startAt" label="Start At" placeholder="Enter start at" type="date" required="true"
+                value="2025-01-01" />
+            <x-input-group name="endAt" label="End At" placeholder="Enter end at" type="date" required="true"
+                value="2026-01-01" />
         </div>
-        <x-input-group name="price" label="Price" placeholder="Enter price" type="number" required="true" />
+        <x-input-group name="price" label="Price" placeholder="Enter price" type="number" required="true"
+            value="300000" />
         <x-input-group name="comparePrice" label="Compare Price" placeholder="Enter compare price" type="number"
-            required="true" />
+            required="true" value="400000" />
         <div class="flex">
             <x-input-group name="weekPrice" label="Week Price" placeholder="Enter week price" type="number"
-                required="true" />
+                required="true" value="280000" />
             <x-input-group name="monthPrice" label="Month Price" placeholder="Enter month price" type="number"
-                required="true" />
+                required="true" value="260000" />
             <x-input-group name="yearPrice" label="Year Price" placeholder="Enter year price" type="number"
-                required="true" />
+                required="true" value="240000" />
         </div>
         <div class="flex">
             <x-input-group name="weekendPrice" label="Weekend Price" placeholder="Enter weekend price" type="number"
-                required="true" />
+                required="true" value="320000" />
             <x-input-group name="holidayPrice" label="Holiday Price" placeholder="Enter holiday price" type="number"
-                required="true" />
+                required="true" value="340000" />
         </div>
-        <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
-
+        <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true"
+            value="Des" />
         <div class="flex">
-            <x-input-group name="maxChair" label="Max Chair" placeholder="Enter max chair" type="number"
-                required="true" />
-            <x-input-group name="maxTable" label="Max Table" placeholder="Enter max table" type="number"
-                required="true" />
+            <x-input-group name="maxChair" label="Max Chair" placeholder="Enter max chair" type="number" required="true"
+                value="30" />
+            <x-input-group name="maxTable" label="Max Table" placeholder="Enter max table" type="number" required="true"
+                value="10" />
             <x-input-group name="maxPeople" label="Max People" placeholder="Enter max people" type="number"
-                required="true" />
+                required="true" value="30" />
         </div>
-        <x-textarea-group name="tags" label="Tags" placeholder="Enter tags" required="true" />
-        <x-textarea-group name="furniture" label="Furniture" placeholder="Enter furniture" required="true" />
+        <x-textarea-group name="tags" label="Tags" placeholder="Enter tags" required="true" value="Meeting room" />
+        <x-textarea-group name="furniture" label="Furniture" placeholder="Enter furniture" required="true" value="TV" />
+
+        <div class="form-group">
+            <label for="building">Select building</label>
+            <select name="building_id" id="building_id" class="form-control" required>
+                <option value="">Select building</option>
+                @foreach ($buildings as $key => $building)
+                    <option value="{{ $building->id }}">
+                        {{ $building->id . ' - ' . $building->name . ' - ' . $building->address }}
+                    </option>
+                @endforeach
+            </select>
+
+        </div>
+
+        <div class="form-group">
+            <label for="images">Upload image</label>
+            <input type="file" class="form-control" id="images" name="images[]" multiple placeholder="Select image" />
+        </div>
+
+        <div id="image-list"></div>
+
+        @if ($errors->any())
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+
+        <input type="hidden" name="status" value="waiting" id="status" />
     </x-modal-add>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
 
     <x-admin-table>
         <thead>
@@ -86,7 +142,7 @@
                         <td>{{ $room->yearPrice }}</td>
                         <td>{{ $room->weekendPrice }}</td>
                         <td>{{ $room->holidayPrice }}</td>
-                        <td>{{ $room->images }}</td>
+                        <td></td>
                         <td>{{ $room->description }}</td>
                         <td>{{ $room->maxChair }}</td>
                         <td>{{ $room->maxTable }}</td>
@@ -112,22 +168,44 @@
     </x-admin-table>
 </div>
 
+<script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script>
-    var varyingModal = document.getElementById('varyingModal')
-    varyingModal.addEventListener('show.bs.modal', function (event) {
-        // Button that triggered the modal
-        var button = event.relatedTarget
-        // Extract info from data-bs-* attributes
-        var recipient = button.getAttribute('data-bs-whatever')
-        // If necessary, you could initiate an AJAX request here
-        // and then do the updating in a callback.
-        //
-        // Update the modal's content.
-        var modalTitle = varyingModal.querySelector('.modal-title')
-        var modalBodyInput = varyingModal.querySelector('.modal-body input')
+    $(document).ready(function () {
+        $('input[type="file"]').on('change', function () {
+            var files = this.files;
+            var images = [];
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    images.push(event.target.result);
+                    $('#image-list').html('');
+                    $.each(images, function (index, image) {
+                        $('#image-list').append('<img src="' + image + '" style="max-width: 100px; height: 100px; object-fit: cover;">');
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-        modalTitle.textContent = 'New message to ' + recipient
-        modalBodyInput.value = recipient
-    })
+        // $('#addRoomForm').on('submit', function (e) {
+        //     e.preventDefault();
+        //     var formData = new FormData(this);
+        //     $.ajax({
+        //         url: $(this).attr('action'),
+        //         type: $(this).attr('method'),
+        //         data: formData,
+        //         processData: false,
+        //         contentType: false,
+        //         success: function (response) {
+        //             console.log(response);
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.log(error);
+        //         }
+        //     })
+        // });
+    });
 </script>
 @endsection

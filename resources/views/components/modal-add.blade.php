@@ -11,7 +11,7 @@
                 </button>
             </div>
             <div class="modal-body relative">
-                <form id="{{$formId}}" action="{{ route($route) }}" method="POST">
+                <form id="{{$formId}}" action="{{ route($route) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{$slot}}
                 </form>

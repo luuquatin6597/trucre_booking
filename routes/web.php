@@ -7,6 +7,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminRoomsController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\AdminBuildingsController;
+use App\Http\Controllers\AdminImagesController;
+
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BuildingController;
@@ -59,6 +61,9 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::post('/admin/rooms/add', [AdminRoomsController::class, 'addRoom'])->name('admin.rooms.add');
     Route::put('/admin/rooms/{id}', [AdminRoomsController::class, 'updateRoom'])->name('admin.rooms.update');
     Route::delete('/admin/rooms/{id}', [AdminRoomsController::class, 'deleteRoom'])->name('admin.rooms.destroy');
+    Route::get('/admin/rooms/{id}/upload', [AdminImagesController::class, 'uploadImage'])->name('admin.rooms.upload');
+    Route::post('/admin/rooms/{id}/upload', [AdminImagesController::class, 'storeImage'])->name('admin.rooms.store');
+    Route::post('/admin/rooms/{id}/remove', [AdminImagesController::class, 'deleteImage'])->name('admin.rooms.remove');
 });
 
 

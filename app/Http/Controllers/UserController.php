@@ -163,7 +163,17 @@ class UserController extends Controller
 
         $request->session()->regenerate();
         session()->forget(['failed_attempts', 'lockout_time']);
-        return redirect()->intended('/homepage')->with('success', 'You have successfully logged in.');
+
+        $url = '';
+        if ($request->user()->role === 'admin' || $request->user()->role === 'staff') {
+            $url = route('admin.dashboard');
+        } elseif ($request->user()->role === 'owner') {
+            $url = route('owner.dashboard');
+        } elseif ($request->user()->role === 'user') {
+            $url = route('homepage');
+        }
+
+        return redirect()->intended($url)->with('success', 'You have successfully logged in.');
     }
 
     public function logout(Request $request)

@@ -13,10 +13,8 @@ class Rooms extends Model
     protected $fillable = [
         'building_id',
         'name',
-        'code',
         'price',
         'comparePrice',
-        'images',
         'description',
         'maxChair',
         'maxTable',
@@ -26,13 +24,11 @@ class Rooms extends Model
         'endAt',
         'status',
         'furniture',
-        'weekPrice',
-        'monthPrice',
-        'yearPrice',
-        'weekendPrice',
-        'holidayPrice',
         'created_at',
         'updated_at',
+        'allDayPrice',
+        'sessionPrice',
+        'type',
     ];
 
     protected $casts = [
@@ -41,11 +37,8 @@ class Rooms extends Model
         'maxChair' => 'integer',
         'maxTable' => 'integer',
         'maxPeople' => 'integer',
-        'weekPrice' => 'integer',
-        'monthPrice' => 'integer',
-        'yearPrice' => 'integer',
-        'weekendPrice' => 'integer',
-        'holidayPrice' => 'integer',
+        'allDayPrice' => 'integer',
+        'sessionPrice' => 'integer',
         'startAt' => 'datetime',
         'endAt' => 'datetime',
         'created_at' => 'datetime',
@@ -55,5 +48,10 @@ class Rooms extends Model
     public function building(): BelongsTo
     {
         return $this->belongsTo(Buildings::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Bookings::class, 'room_id');
     }
 }

@@ -83,3 +83,28 @@ input[type="search"]::-webkit-search-results-decoration {
 .ui-autocomplete.ui-front {
     z-index: 1060; /* Cao hơn modal */
 }
+
+.slick-dots {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.slick-dots li {
+    display: flex;
+    cursor: pointer;
+    background: #ffd6aa;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+}
+
+.slick-dots li.slick-active {
+    background: #ff992c;
+}
+
+.slick-dots li button {
+    display: none;
+}

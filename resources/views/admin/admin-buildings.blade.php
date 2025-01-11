@@ -4,7 +4,7 @@
 <?php
 $status = ['active' => 'active', 'inactive' => 'inactive'];
 ?>
-<x-admin-breadcrumb title="Buildings" subtitle="Add new building" link="admin.buildings" />
+<x-admin-breadcrumb title="Buildings" subtitle="List building" link="admin.buildings" />
 
 <x-modal-add modalTitle="Add building" route="admin.buildings.add" modalId="addBuildingModal" formId="addBuildingForm">
     @if (Auth::user()->role == 'owner')

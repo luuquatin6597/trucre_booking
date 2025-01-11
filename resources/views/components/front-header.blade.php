@@ -115,7 +115,7 @@ $navList = [
                             <div class="flex flex-wrap bg-white rounded-20 shadow-[2px_2px_30px_0px_rgb(0,0,0,0.15)]">
                             @if (Route::has('login'))
                                 @auth
-                                <a href="{{ route('dashboard') }}" class="p-20 flex items-center justify-center">
+                                <a href="{{ route('profile') }}" class="p-20 flex items-center justify-center">
                                     Profile
                                 </a>
                                 <hr>

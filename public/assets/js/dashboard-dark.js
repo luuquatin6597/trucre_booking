@@ -300,97 +300,6 @@ $(function() {
 
 
 
-
-  // Revenue Chart
-  if ($('#revenueChart').length) {
-    var lineChartOptions = {
-      chart: {
-        type: "line",
-        height: '400',
-        parentHeightOffset: 0,
-        foreColor: colors.bodyColor,
-        background: colors.cardBg,
-        toolbar: {
-          show: false
-        },
-      },
-      theme: {
-        mode: 'light'
-      },
-      tooltip: {
-        theme: 'light'
-      },
-      colors: [colors.primary, colors.danger, colors.warning],
-      grid: {
-        padding: {
-          bottom: -4,
-        },
-        borderColor: colors.gridBorder,
-        xaxis: {
-          lines: {
-            show: true
-          }
-        }
-      },
-      series: [
-        {
-          name: "Revenue",
-          data: revenueChartData
-        },
-      ],
-      xaxis: {
-        type: "datetime",
-        categories: revenueChartCategories,
-        lines: {
-          show: true
-        },
-        axisBorder: {
-          color: colors.gridBorder,
-        },
-        axisTicks: {
-          color: colors.gridBorder,
-        },
-        crosshairs: {
-          stroke: {
-            color: colors.secondary,
-          },
-        },
-      },
-      yaxis: {
-        title: {
-          text: 'Revenue ( $1000 x )',
-          style:{
-            size: 9,
-            color: colors.muted
-          }
-        },
-        tickAmount: 4,
-        tooltip: {
-          enabled: true
-        },
-        crosshairs: {
-          stroke: {
-            color: colors.secondary,
-          },
-        },
-      },
-      markers: {
-        size: 0,
-      },
-      stroke: {
-        width: 2,
-        curve: "straight",
-      },
-    };
-    var apexLineChart = new ApexCharts(document.querySelector("#revenueChart"), lineChartOptions);
-    apexLineChart.render();
-  }
-  // Revenue Chart - END
-
-
-
-
-
   // Revenue Chart - RTL
   if ($('#revenueChartRTL').length) {
     var lineChartOptions = {
@@ -482,106 +391,6 @@ $(function() {
     apexLineChart.render();
   }
   // Revenue Chart - RTL - END
-
-
-
-
-
-  // Monthly Sales Chart
-  if($('#monthlySalesChart').length) {
-    var options = {
-      chart: {
-        type: 'bar',
-        height: '318',
-        parentHeightOffset: 0,
-        foreColor: colors.bodyColor,
-        background: colors.cardBg,
-        toolbar: {
-          show: false
-        },
-      },
-      theme: {
-        mode: 'light'
-      },
-      tooltip: {
-        theme: 'light'
-      },
-      colors: [colors.primary],  
-      fill: {
-        opacity: .9
-      } , 
-      grid: {
-        padding: {
-          bottom: -4
-        },
-        borderColor: colors.gridBorder,
-        xaxis: {
-          lines: {
-            show: true
-          }
-        }
-      },
-      series: [{
-        name: 'Sales',
-        data: [152,109,93,113,126,161,188,143,102,113,116,124]
-      }],
-      xaxis: {
-        type: 'datetime',
-        categories: ['01/01/2022','02/01/2022','03/01/2022','04/01/2022','05/01/2022','06/01/2022','07/01/2022', '08/01/2022','09/01/2022','10/01/2022', '11/01/2022', '12/01/2022'],
-        axisBorder: {
-          color: colors.gridBorder,
-        },
-        axisTicks: {
-          color: colors.gridBorder,
-        },
-      },
-      yaxis: {
-        title: {
-          text: 'Number of Sales',
-          style:{
-            size: 9,
-            color: colors.muted
-          }
-        },
-      },
-      legend: {
-        show: true,
-        position: "top",
-        horizontalAlign: 'center',
-        fontFamily: fontFamily,
-        itemMargin: {
-          horizontal: 8,
-          vertical: 0
-        },
-      },
-      stroke: {
-        width: 0
-      },
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '10px',
-          fontFamily: fontFamily,
-        },
-        offsetY: -27
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: "50%",
-          borderRadius: 4,
-          dataLabels: {
-            position: 'top',
-            orientation: 'vertical',
-          }
-        },
-      },
-    }
-    
-    var apexBarChart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
-    apexBarChart.render();
-  }
-  // Monthly Sales Chart - END
-
 
 
 
@@ -688,60 +497,290 @@ $(function() {
   // Monthly Sales Chart - RTL - END
 
 
-
-
-
-  // Cloud Storage Chart
-  if ($('#storageChart').length) {
-    var options = {
-      chart: {
-        height: 260,
-        type: "radialBar"
-      },
-      series: [67],
-      colors: [colors.primary],
-      plotOptions: {
-        radialBar: {
-          hollow: {
-            margin: 15,
-            size: "70%"
-          },
-          track: {
-            show: true,
-            background: colors.dark,
-            strokeWidth: '100%',
-            opacity: 1,
-            margin: 5, 
-          },
-          dataLabels: {
-            showOn: "always",
-            name: {
-              offsetY: -11,
-              show: true,
-              color: colors.muted,
-              fontSize: "13px"
-            },
-            value: {
-              color: colors.bodyColor,
-              fontSize: "30px",
-              show: true
-            }
-          }
+$(function () {
+    // User & Owner Chart
+    var userCount = window.userCount;
+    var ownerCount = window.ownerCount;
+    var userRole = window.userRole;
+    if ($('#storageChart').length) {
+        let ownerLabel = "Owners";
+        if(userRole === "admin"){
+            ownerLabel = "Total Owner";
         }
-      },
-      fill: {
-        opacity: 1
-      },
-      stroke: {
-        lineCap: "round",
-      },
-      labels: ["Storage Used"]
-    };
-    
-    var chart = new ApexCharts(document.querySelector("#storageChart"), options);
-    chart.render();    
-  }
-  // Cloud Storage Chart - END
+        var options = {
+        chart: {
+            height: 260,
+            type: "radialBar"
+        },
+        series: [ownerCount],
+        colors: [colors.primary],
+        plotOptions: {
+            radialBar: {
+            hollow: {
+                margin: 15,
+                size: "70%"
+            },
+            track: {
+                show: true,
+                background: colors.dark,
+                strokeWidth: '100%',
+                opacity: 1,
+                margin: 5, 
+            },
+            dataLabels: {
+                showOn: "always",
+                name: {
+                offsetY: -11,
+                show: true,
+                color: colors.muted,
+                fontSize: "13px"
+                },
+                value: {
+                color: colors.bodyColor,
+                fontSize: "30px",
+                show: true
+                }
+            }
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        stroke: {
+            lineCap: "round",
+        },
+        labels: [ownerLabel]
+        };
+        var chart = new ApexCharts(document.querySelector("#storageChart"), options);
+        chart.render();    
+    }
+    // Monthly Booking Chart
+    var monthlyBookingChartData = window.monthlyBookingChartData;
+    var monthlyBookingChartCategories = window.monthlyBookingChartCategories;
 
+    if (!monthlyBookingChartData || !monthlyBookingChartCategories || monthlyBookingChartData.length === 0 || monthlyBookingChartCategories.length === 0) {
+        console.error("Invalid monthly booking data:", monthlyBookingChartData, monthlyBookingChartCategories);
+        return; // Dừng thực thi nếu dữ liệu không hợp lệ.
+    }
 
+    if($('#monthlySalesChart').length) {
+        var options = {
+        chart: {
+            type: 'bar',
+            height: '318',
+            parentHeightOffset: 0,
+            foreColor: colors.bodyColor,
+            background: colors.cardBg,
+            toolbar: {
+            show: false
+            },
+        },
+        theme: {
+            mode: 'light'
+        },
+        tooltip: {
+            theme: 'light'
+        },
+        colors: [colors.primary],  
+        fill: {
+            opacity: .9
+        } , 
+        grid: {
+            padding: {
+            bottom: -4
+            },
+            borderColor: colors.gridBorder,
+            xaxis: {
+            lines: {
+                show: true
+            }
+            }
+        },
+        series: [{
+            name: 'Bookings',
+            data: monthlyBookingChartData
+        }],
+        xaxis: {
+            type: 'datetime',
+            categories: monthlyBookingChartCategories,
+        axisBorder: {
+            color: colors.gridBorder,
+        },
+        axisTicks: {
+            color: colors.gridBorder,
+        },
+        },
+        yaxis: {
+            title: {
+            text: 'Number of Bookings',
+            style:{
+                size: 9,
+                color: colors.muted
+            }
+            },
+        },
+        legend: {
+            show: true,
+            position: "top",
+            horizontalAlign: 'center',
+            fontFamily: fontFamily,
+            itemMargin: {
+            horizontal: 8,
+            vertical: 0
+            },
+        },
+        stroke: {
+            width: 0
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+            fontSize: '10px',
+            fontFamily: fontFamily,
+            },
+            offsetY: -27
+        },
+        plotOptions: {
+            bar: {
+            columnWidth: "50%",
+            borderRadius: 4,
+            dataLabels: {
+                position: 'top',
+                orientation: 'vertical',
+            }
+            },
+        },
+        }
+        var apexBarChart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
+        apexBarChart.render();
+    }
+    let apexLineChart = null;
+    // Hàm khởi tạo hoặc cập nhật biểu đồ
+    function renderChart(revenueChartData, revenueChartCategories, period) {
+        var lineChartOptions = {
+            chart: {
+                type: "line",
+                height: '400',
+                parentHeightOffset: 0,
+                foreColor: colors.bodyColor,
+                background: colors.cardBg,
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: false,
+                },
+            },
+            theme: {
+                mode: 'light'
+            },
+            tooltip: {
+                theme: 'light'
+            },
+            colors: [colors.primary, colors.danger, colors.warning],
+            grid: {
+                padding: {
+                    bottom: -4,
+                },
+                borderColor: colors.gridBorder,
+                xaxis: {
+                    lines: {
+                        show: true
+                    }
+                }
+            },
+            series: [
+                {
+                    name: "Revenue",
+                    data: revenueChartData
+                },
+            ],
+            xaxis: {
+                type: period === 'week' ? 'category' : 'datetime',
+                categories: revenueChartCategories,
+                lines: {
+                    show: true
+                },
+                axisBorder: {
+                    color: colors.gridBorder,
+                },
+                axisTicks: {
+                    color: colors.gridBorder,
+                },
+                crosshairs: {
+                    stroke: {
+                        color: colors.secondary,
+                    },
+                },
+            },
+            yaxis: {
+                title: {
+                    text: 'Revenue ( $1000 x )',
+                    style:{
+                        size: 9,
+                        color: colors.muted
+                    }
+                },
+                tickAmount: 4,
+                tooltip: {
+                    enabled: true
+                },
+                crosshairs: {
+                    stroke: {
+                        color: colors.secondary,
+                    },
+                },
+            },
+            markers: {
+                size: 0,
+            },
+            stroke: {
+                width: 2,
+                curve: "straight",
+            },
+        };
+        // Nếu biểu đồ chưa được khởi tạo thì khởi tạo, ngược lại cập nhật
+        if (apexLineChart === null) {
+            apexLineChart = new ApexCharts(document.querySelector("#revenueChart"), lineChartOptions);
+            apexLineChart.render();
+        } else {
+            apexLineChart.updateOptions(lineChartOptions);
+            apexLineChart.updateSeries([{
+                data: revenueChartData
+            }]);
+            apexLineChart.updateOptions({
+                xaxis: {
+                    type: period === 'week' ? 'category' : 'datetime',
+                    categories: revenueChartCategories,
+                }
+            });
+        }
+    }
+    // Hàm lấy dữ liệu từ server
+    function fetchRevenueData(period) {
+        $.ajax({
+            url: '/admin/get-revenue-chart-data',
+            method: 'GET',
+            data: { period: period },
+            success: function(response) {
+                renderChart(response.data, response.categories, period);
+            },
+            error: function(error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+     // Sử lý sự kiện click các button
+    $('.btn-group button').on('click', function() {
+        $('.btn-group button').removeClass('active');
+        $(this).addClass('active');
+        var period = $(this).data('period');
+        fetchRevenueData(period);
+    });
+
+    // Khởi tạo biểu đồ ban đầu khi load trang
+    var initialRevenueChartData = window.revenueChartData;
+    var initialRevenueChartCategories = window.revenueChartCategories;
+    renderChart(initialRevenueChartData, initialRevenueChartCategories, 'month');
+    });
 });

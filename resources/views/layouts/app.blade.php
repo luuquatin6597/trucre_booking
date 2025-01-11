@@ -14,14 +14,69 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            getCurrencySession = '{{ session('currency') }}';
+            if (getCurrencySession == '') {
+                fetch('/set-currency', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ currency: 'USD' }),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            console.error('Failed to set currency');
+                        }
+                    });
+            } else {
+                const currencySelect = document.getElementById('currency-select');
+                let currentCurrency = '{{ session('currency') ?? 'USD' }}';
+                currencySelect.value = currentCurrency;
+                currencySelect.addEventListener('change', function () {
+                    const selectedCurrency = currencySelect.value;
+                    fetch('/set-currency', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ currency: selectedCurrency }),
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                location.reload();
+                            } else {
+                                console.error('Failed to set currency');
+                            }
+                        });
+                });
+            }
+        });
+    </script>
 </head>
 
 <body class="">
-    <x-front-header></x-front-header>
+    <x-front-header />
 
     <main>
         {{ $slot }}
     </main>
+
+    <select id="currency-select" class="fixed top-[150px] right-0 rounded-l-[20px] border-primary-300 appearance-none">
+        <option value="USD" {{ session('currency') == 'USD' ? 'selected' : '' }}>USD</option>
+        <option value="VND" {{ session('currency') == 'VND' ? 'selected' : '' }}>VND</option>
+        <option value="EUR" {{ session('currency') == 'EUR' ? 'selected' : '' }}>EUR</option>
+        <option value="GBP" {{ session('currency') == 'GBP' ? 'selected' : '' }}>GBP</option>
+    </select>
+
+    @include('contact.contact')
+    <x-front-footer />
 </body>
 
 </html>

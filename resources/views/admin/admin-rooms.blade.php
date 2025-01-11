@@ -1,5 +1,6 @@
 @extends('admin.index')
 @section('admin')
+
 <?php
 use App\Models\Buildings;
 $buildings = Buildings::all();
@@ -25,17 +26,9 @@ foreach ($buildings as $key => $building) {
         <x-input-group name="comparePrice" label="Compare Price" placeholder="Enter compare price" type="number"
             required="true" />
         <div class="flex">
-            <x-input-group name="weekPrice" label="Week Price" placeholder="Enter week price" type="number"
+            <x-input-group name="allDayPrice" label="All Day Price" placeholder="Enter all day price" type="number"
                 required="true" />
-            <x-input-group name="monthPrice" label="Month Price" placeholder="Enter month price" type="number"
-                required="true" />
-            <x-input-group name="yearPrice" label="Year Price" placeholder="Enter year price" type="number"
-                required="true" />
-        </div>
-        <div class="flex">
-            <x-input-group name="weekendPrice" label="Weekend Price" placeholder="Enter weekend price" type="number"
-                required="true" />
-            <x-input-group name="holidayPrice" label="Holiday Price" placeholder="Enter holiday price" type="number"
+            <x-input-group name="sessionPrice" label="Session Price" placeholder="Enter session price" type="number"
                 required="true" />
         </div>
         <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
@@ -60,7 +53,15 @@ foreach ($buildings as $key => $building) {
                     </option>
                 @endforeach
             </select>
+        </div>
 
+        <div class="form-group">
+            <label for="floor">Select type</label>
+            <select name="type" id="type" class="form-control" required>
+                <option value="">Select type</option>
+                <option value="Meeting room">Meeting room</option>
+                <option value="Conference room">Conference room</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -68,7 +69,7 @@ foreach ($buildings as $key => $building) {
             <input type="file" class="form-control" id="images" name="images[]" multiple placeholder="Select image" />
         </div>
 
-        <div id="image-list"></div>
+        <div id="image-list d-flex gap-2"></div>
 
         @if ($errors->any())
             <ul>
@@ -100,13 +101,10 @@ foreach ($buildings as $key => $building) {
                 <th>Name</th>
                 <th>Price</th>
                 <th>Compare Price</th>
-                <th>Week price</th>
-                <th>Month price</th>
-                <th>Year price</th>
-                <th>Weekend price</th>
-                <th>Holiday price</th>
+                <th>All day price</th>
+                <th>Session price</th>
                 <th>Images</th>
-                <th>Description</th>
+                <th style="width: 250px;">Description</th>
                 <th>Max Chair</th>
                 <th>Max Table</th>
                 <th>Max People</th>
@@ -129,16 +127,19 @@ foreach ($buildings as $key => $building) {
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $room->id }}</td>
-                        <td>{{ $room->name }}</td>
-                        <td>{{ $room->price }}</td>
-                        <td>{{ $room->comparePrice }}</td>
-                        <td>{{ $room->weekPrice }}</td>
-                        <td>{{ $room->monthPrice }}</td>
-                        <td>{{ $room->yearPrice }}</td>
-                        <td>{{ $room->weekendPrice }}</td>
-                        <td>{{ $room->holidayPrice }}</td>
+                        <td><a href="{{route('admin.rooms.get', $room->id)}}">{{ $room->name }}</a></td>
+                        <td>{{ format_currency($room->price * getExchangeRate('USD', session('currency')), session('currency'))}}
+                        </td>
+                        <td>{{ format_currency($room->comparePrice * getExchangeRate('USD', session('currency')), session('currency'))}}
+                        </td>
+                        <td>{{ format_currency($room->allDayPrice * getExchangeRate('USD', session('currency')), session('currency'))}}
+                        </td>
+                        <td>{{ format_currency($room->sessionPrice * getExchangeRate('USD', session('currency')), session('currency'))}}
+                        </td>
                         <td></td>
-                        <td>{{ $room->description }}</td>
+                        <td
+                            style="width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                            {{ $room->description }}</td>
                         <td>{{ $room->maxChair }}</td>
                         <td>{{ $room->maxTable }}</td>
                         <td>{{ $room->maxPeople }}</td>

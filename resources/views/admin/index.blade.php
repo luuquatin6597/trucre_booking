@@ -1,13 +1,4 @@
 <!DOCTYPE html>
-<!--
-Template Name: NobleUI - HTML Bootstrap 5 Admin Dashboard Template
-Author: NobleUI
-Website: https://www.nobleui.com
-Portfolio: https://themeforest.net/user/nobleui/portfolio
-Contact: nobleui123@gmail.com
-Purchase: https://1.envato.market/nobleui_admin
-License: For each use you must have a valid license purchased only from above link in order to legally use the theme for your project.
--->
 <html lang="en">
 
 <head>
@@ -15,11 +6,11 @@ License: For each use you must have a valid license purchased only from above li
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
-    <meta name="author" content="NobleUI">
+    <meta name="author" content="Admin Trucre booking">
     <meta name="keywords"
         content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-    <title>NobleUI - HTML Bootstrap 5 Admin Dashboard Template</title>
+    <title>Admin Trucre booking</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,21 +48,53 @@ License: For each use you must have a valid license purchased only from above li
 
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png')}}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currencySelect = document.getElementById('currency-select');
+            let currentCurrency = '{{ session('currency') ?? 'USD' }}';
+            currencySelect.value = currentCurrency;
+            currencySelect.addEventListener('change', function () {
+                const selectedCurrency = currencySelect.value;
+                fetch('/set-currency', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ currency: selectedCurrency }),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            console.error('Failed to set currency');
+                        }
+                    });
+            });
+        });
+    </script>
 </head>
 
 <body>
     <div class="main-wrapper">
-
         <!-- partial:partials/_sidebar.html -->
         <x-common.sidebar />
         <!-- partial -->
 
         <div class="page-wrapper">
-
             <!-- partial:partials/_navbar.html -->
             <x-common.header />
             <!-- partial -->
             <div class="page-content">
+                <select id="currency-select"
+                    class="fixed z-[1] top-[150px] right-0 rounded-l-[20px] border-primary-300 appearance-none">
+                    <option value="USD" {{ session('currency') == 'USD' ? 'selected' : '' }}>USD</option>
+                    <option value="VND" {{ session('currency') == 'VND' ? 'selected' : '' }}>VND</option>
+                    <option value="EUR" {{ session('currency') == 'EUR' ? 'selected' : '' }}>EUR</option>
+                    <option value="GBP" {{ session('currency') == 'GBP' ? 'selected' : '' }}>GBP</option>
+                </select>
+
                 @yield('admin')
             </div>
 

@@ -1,13 +1,18 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Bookings;
 use App\Models\User;
+use Google\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Mail\OtpMail;
+use Laravel\Socialite\Facades\Socialite;
+use Log;
+use Str;
 
 class UserController extends Controller
 {
@@ -163,6 +168,15 @@ class UserController extends Controller
 
         $request->session()->regenerate();
         session()->forget(['failed_attempts', 'lockout_time']);
+        $redirect_to = Session::get('redirect_to');
+        $booking_params = Session::get('booking_params');
+
+        if ($redirect_to && $booking_params) {
+            Session::forget('redirect_to');
+            Session::forget('booking_params');
+            $query = http_build_query($booking_params);
+            return redirect($redirect_to . '?' . $query);
+        }
 
         $url = '';
         if ($request->user()->role === 'admin' || $request->user()->role === 'staff') {
@@ -311,5 +325,13 @@ class UserController extends Controller
         }
 
         return back()->withErrors(['email' => 'No user found with this email.']);
+    }
+
+    public function showProfile()
+    {
+        $user = Auth::user();
+        $bookings = Bookings::with(['user', 'room'])->where('user_id', $user->id)->get();
+
+        return view('profile.profile', compact('user', 'bookings'));
     }
 }

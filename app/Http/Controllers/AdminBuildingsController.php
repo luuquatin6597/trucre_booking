@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Auth;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\View;
@@ -13,8 +14,15 @@ class AdminBuildingsController extends Controller
 {
     public function AdminBuildings()
     {
-        $buildings = Buildings::with('user')->get();
-        return view('admin.admin-buildings', compact('buildings'));
+        $user = Auth::user();
+        $role = $user->role;
+        $buildings = Buildings::with('user')
+            ->when($role === 'owner', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->get();
+
+        return view('admin.admin-buildings', compact('buildings', 'role'));
     }
 
     public function getBuilding($id)

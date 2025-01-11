@@ -22,8 +22,8 @@ class AdminImagesController extends Controller
         try {
             $room = Rooms::findOrFail($id);
             $request->validate([
-                'images' => 'required',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'images' => 'required|max:3000',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:3000',
             ]);
 
             $imageData = [];

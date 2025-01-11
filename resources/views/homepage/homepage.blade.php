@@ -7,6 +7,4 @@
     @include('homepage.trusted-by-thoudsands')
 
     @include('homepage.easy-to-book')
-
-    <x-front-footer />
 </x-app-layout>

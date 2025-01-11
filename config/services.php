@@ -34,5 +34,12 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'refresh_token' => env('GOOGLE_REFRESH_TOKEN'),
+        'service_account_json' => env('GOOGLE_SERVICE_ACCOUNT_JSON_PATH'),
+        'calendar_id' => env('GOOGLE_CALENDAR_ID'),
+    ],
 ];

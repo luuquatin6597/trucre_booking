@@ -15,6 +15,9 @@ use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\FrontRoomController;
 use App\Http\Controllers\FrontBookingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
 

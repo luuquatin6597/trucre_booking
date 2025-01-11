@@ -18,9 +18,9 @@ class UserController extends Controller
 {
     public function showForm()
     {
-
         return view('register');
     }
+
     public function store(Request $request)
     {
         // Xác thực dữ liệu từ form
@@ -88,6 +88,7 @@ class UserController extends Controller
 
         return redirect()->route('login')->with('success', 'Registration successful! Please log in.');
     }
+
     public function showLoginForm()
     {
         return view('login'); // Hiển thị trang đăng nhập
@@ -149,16 +150,21 @@ class UserController extends Controller
             $failedAttempts += 1;
             session()->put('failed_attempts', $failedAttempts); // Lưu lại số lần thất bại
 
-            // Tính toán thời gian khóa theo số lần thất bại
-            if ($failedAttempts >= 5) {
-                $lockoutDuration = pow(2, $failedAttempts - 5) * 60; // 1 phút, 5 phút, 10 phút...
-                session()->put('lockout_time', now()->addSeconds($lockoutDuration));
+            // Xác thực mật khẩu
+            if (!$user || !Hash::check($credentials['password'], $user->password)) {
+                $failedAttempts += 1;
+                session()->put('failed_attempts', $failedAttempts); // Lưu lại số lần thất bại
 
-                // Chỉ sử dụng `with()` để truyền thông tin lockout
-                return back()->with([
-                    'lockout_duration' => $lockoutDuration,
-                    'error_message' => "Too many login attempts. Please wait for " . ($lockoutDuration / 60) . " minutes.",
-                ]);
+                if ($failedAttempts >= 5) {
+                    $lockoutDuration = pow(2, $failedAttempts - 5) * 60; // 1 phút, 5 phút, 10 phút...
+                    session()->put('lockout_time', now()->addSeconds($lockoutDuration));
+
+                    // Chỉ sử dụng `with()` để truyền thông tin lockout
+                    return back()->with([
+                        'lockout_duration' => $lockoutDuration,
+                        'error_message' => "Too many login attempts. Please wait for " . ($lockoutDuration / 60) . " minutes.",
+                    ]);
+                }
             }
 
             return back()->withErrors([
@@ -244,32 +250,6 @@ class UserController extends Controller
             $timeLeft = $lockTime - $currentTime;
             return redirect()->route('verify.otp.form')->with('otp_locked', "Your account is locked. Please try again in $timeLeft seconds.");
         }
-
-        // Kiểm tra thời gian hết hạn OTP
-        if (($currentTime - $otpTime) > 60) {
-            Session::forget(['otp', 'otp_time', 'otp_attempts', 'lock_until']);
-            return redirect()->route('verify.otp.form')->with('otp_expired', 'OTP has expired. Please request a new one.');
-        }
-
-        // Kiểm tra OTP có đúng không
-        if ($otp == $request->otp) {
-            Session::forget(['otp', 'otp_time', 'otp_attempts', 'lock_until']);
-            return redirect()->route('reset.password')->with('success', 'OTP verified! Please reset your password.');
-        }
-
-        // Tăng số lần nhập sai OTP
-        $attempts += 1;
-        Session::put('otp_attempts', $attempts);
-
-        // Kiểm tra nếu vượt quá số lần thử
-        if ($attempts >= 3) {
-            $lockUntil = $currentTime + 60; // Khóa trong 60 giây
-            Session::put('lock_until', $lockUntil);
-
-            return redirect()->route('verify.otp.form')->with('otp_locked', "You have exceeded the maximum number of attempts. Your account is locked for 60 seconds.");
-        }
-
-        return redirect()->route('verify.otp.form')->with('otp_invalid', 'Invalid OTP. Please check your email or wait 60 seconds to press Resend OTP if you do not receive the code.');
     }
 
     public function resendOtp()

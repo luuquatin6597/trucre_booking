@@ -12,11 +12,7 @@ class AdminCertificatesController extends Controller
 
     public function index()
     {
-        $certificates = Certificates::with('building') // Tải thông tin building cho mỗi certificate
-        ->whereHas('building', function($query) {
-            $query->where('status', 'active'); // Chỉ lấy các building có status 'waiting'
-        })
-        ->get();
+        $certificates = Certificates::with('building')->get();
         // Trả dữ liệu về view
         return view('admin.Admin-certificates', compact('certificates'));
     }

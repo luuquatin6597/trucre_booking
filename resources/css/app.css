@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @font-face {
     font-family: "Petrona";
     src: url("../../public/assets/font/Petrona-Font.ttf") format("truetype");
@@ -83,3 +84,16 @@ input[type="search"]::-webkit-search-results-decoration {
 .ui-autocomplete.ui-front {
     z-index: 1060; /* Cao hơn modal */
 }
+
+.status-active {
+    color: #2ecc71; /* Màu xanh lá */
+  }
+
+  .status-waiting {
+    color: #3498db; /* Màu xanh dương */
+  }
+
+  .status-inactive {
+    color: #e74c3c; /* Màu đỏ */
+  }
+

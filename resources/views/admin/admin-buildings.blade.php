@@ -81,7 +81,7 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
                     <td>{{ $building->country }}</td>
                     <td>{{ $building->map_link }}</td>
 
-                    <td>{{ $building->status }}</td>
+                    <td class="status-{{ $building->status }}">{{ $building->status }}</td>
                     <td>
                         <button type="button" class="btn btn-info" data-toggle="modal" data-id="{{ $building->id }}"
                             data-action="{{ route('admin.buildings.update', $building->id) }}" data-target="#editBuildingModal">

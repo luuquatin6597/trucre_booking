@@ -28,6 +28,7 @@ $status = ['accepted' => 'accepted', 'rejected' => 'rejected'];
                     <td>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#certificateModal" data-url="{{ asset($certificate->url) }}">View Certificate</button>
                     </td>
+                    <td class="status-{{ $certificate->building->status }}">{{ $certificate->building->status }}</td>
                     <td>
                             <form action="{{ route('admin.certificates.accept', $certificate->building->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
@@ -40,10 +41,9 @@ $status = ['accepted' => 'accepted', 'rejected' => 'rejected'];
                                 <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                             </form>
                     </td>
-                    <td>
-                        <!-- Hiển thị trạng thái của building -->
-                        {{ $certificate->building ? $certificate->building->status : 'Not Found' }}
-                    </td>
+
+
+
                 </tr>
             @endforeach
         @endif
@@ -60,6 +60,8 @@ $status = ['accepted' => 'accepted', 'rejected' => 'rejected'];
             </div>
             <div class="modal-body">
                 <img id="certificateImage" src="" alt="Certificate" class="img-fluid">
+                <embed id="certificateEmbed" src="" type="application/pdf" width="100%" height="600px">
+
             </div>
         </div>
     </div>
@@ -67,16 +69,26 @@ $status = ['accepted' => 'accepted', 'rejected' => 'rejected'];
 
 <script>
     $(document).ready(function () {
-        console.log('')
-        // Hiển thị modal với hình ảnh
         $('#certificateModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var certificateUrl = button.data('url');
-        console.log(certificateUrl);
+            var button = $(event.relatedTarget);
+            var certificateUrl = button.data('url');
+            var fileExtension = certificateUrl.split('.').pop().toLowerCase();
 
-        $('#certificateImage').attr('src', certificateUrl);
-    });
+
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                $('#certificateImage').attr('src', certificateUrl).removeClass('d-none');
+                $('#certificateEmbed').addClass('d-none');
+            } else if (fileExtension === 'pdf') {
+                $('#certificateEmbed').attr('src', certificateUrl).removeClass('d-none');
+                $('#certificateImage').addClass('d-none');
+            } else {
+                alert('Unsupported file format');
+                $('#certificateImage').addClass('d-none');
+                $('#certificateEmbed').addClass('d-none');
+            }
+        });
     });
 </script>
+
 
 @endsection

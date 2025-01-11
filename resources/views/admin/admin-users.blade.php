@@ -78,7 +78,7 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
                     <td>{{ $user->username }}</td>
                     <td>{{ $user->role }}</td>
                     <td>{{ $user->point }}</td>
-                    <td>{{ $user->status }}</td>
+                    <td class="status-{{ $user->status }}">{{ $user->status }}</td>
                     <td>{{ $user->created_at }}</td>
                     <td>{{ $user->updated_at }}</td>
                     <td>

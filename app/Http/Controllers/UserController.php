@@ -140,7 +140,7 @@ public function login(Request $request)
     }
 
     // Xác thực mật khẩu
-    if (!Auth::attempt([$field => $credentials['emailOrUsername'], 'password' => $credentials['password']])) {
+    if (!$user || !Hash::check($credentials['password'], $user->password)) {
         $failedAttempts += 1;
         session()->put('failed_attempts', $failedAttempts); // Lưu lại số lần thất bại
 
@@ -163,7 +163,7 @@ public function login(Request $request)
 
     $request->session()->regenerate();
     session()->forget(['failed_attempts', 'lockout_time']);
-    return redirect()->intended('/homepage')->with('success', 'You have successfully logged in.');
+    return redirect()->intended(route('homepage'))->with('success', 'You have successfully logged in.');
 }
 
 public function logout(Request $request)

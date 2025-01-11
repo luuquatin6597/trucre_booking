@@ -14,6 +14,45 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery UI -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<style>
+    /* Tùy chỉnh thanh trượt */
+    #slider-range {
+        height: 8px;
+        background: linear-gradient(to right, #0429f8, #0429f8);
+        border-radius: 4px;
+        position: relative;
+    }
+
+    /* Tùy chỉnh nút kéo */
+    .ui-slider-handle {
+        width: 24px;
+        height: 24px;
+        background-color: #ff5722;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        top: -8px; /* Căn chỉnh nút kéo với thanh */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+
+    /* Hiệu ứng hover cho nút kéo */
+    .ui-slider-handle:hover {
+        background-color: #ff7043;
+    }
+
+    /* Hiệu ứng khi kéo nút */
+    .ui-slider-handle:active {
+        background-color: #e64a19;
+        transform: scale(1.1);
+    }
+</style>
+
 </head>
 
 <body class="">

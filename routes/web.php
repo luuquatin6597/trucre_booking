@@ -12,6 +12,9 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BuildingController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
 

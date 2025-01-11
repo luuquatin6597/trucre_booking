@@ -1,3 +1,8 @@
+<?php
+$tags = explode(',', $product->tags);
+$hashtags = array_slice($tags, 0, 3);
+?>
+
 <div class="card-item">
     <a class="product-img relative block overflow-hidden rounded-15 mb-[12px]" href="{{ route('homepage')}}"
         title="Product Name">
@@ -8,17 +13,24 @@
         </span>
         <span
             class="absolute bottom-0 left-0 bg-red rounded-tr-15 rounded-bl-15 px-[14px] py-[5px] text-white text-title-2 font-bold">
-            {{ calculate_discount(price: 1000, comparePrice: 2000) }}
+            {{ calculate_discount(price: $product->price, comparePrice: $product->comparePrice) }}
         </span>
         <img class="block w-full h-[400px] object-cover" src="https://via.placeholder.com/300x200" alt="Product Name" />
     </a>
     <div class="product-info">
         <a class="product-title text-title-2 font-bold mb-[8px] overflow-hidden text-ellipsis line-clamp-2 whitespace-normal"
-            href="{{ route('homepage')}}" title="Product Name">Product
-            Name</a>
-        <x-product-price price="1000" comparePrice="2000" />
-        <x-hashtag class="mt-[12px] w-fit">
-            #da_nang
-        </x-hashtag>
+            href="{{ route('homepage')}}" title="Product Name">{{$product->name}}</a>
+        <x-product-price price="{{$product->price}}" comparePrice="{{$product->comparePrice}}" />
+
+            @foreach ($hashtags as $hashtag)
+            @php
+                $encodedHashtag = urlencode(trim($hashtag));
+                $h = url('/categories?tags=' . $encodedHashtag);
+            @endphp
+            <x-hashtag href="{{ $h }}" class="mt-[12px] w-fit">
+                #{{ trim($hashtag) }}
+            </x-hashtag>
+        @endforeach
+
     </div>
 </div>

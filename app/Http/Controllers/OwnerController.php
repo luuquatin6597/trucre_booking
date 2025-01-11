@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Buildings;
 use App\Models\Bookings;
 use App\Models\Rooms;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;

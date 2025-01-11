@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Database\Eloquent\Model;
 
 class AdminUsersController extends Controller
 {
@@ -75,10 +77,10 @@ class AdminUsersController extends Controller
                 'username' => 'required|string|unique:users,username,' . $id,
                 'role' => 'required|in:admin,user,staff,owner',
                 'status' => 'required|in:active,inactive',
-                'password' => 'nullable|string|min:8', // Cho phép password null
+                'password' => 'nullable|string|min:8',
             ]);
 
-            // Hash password nếu được gửi
+
             if ($request->filled('password')) {
                 $validatedData['password'] = Hash::make($request->password);
             }
@@ -88,7 +90,7 @@ class AdminUsersController extends Controller
 
             return redirect()->route('admin.users')->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
-            // Xử lý lỗi và thông báo
+
             return redirect()->route('admin.users')->with('error', 'Failed to update user: ' . $e->getMessage());
         }
     }
@@ -113,4 +115,28 @@ class AdminUsersController extends Controller
         $users = User::all()->groupBy('role');
         return view('admin.admin-typeaccount', compact('users'));
     }
+
+    public function logout(Request $request)
+{
+    Auth::logout();
+    return redirect()->route('login');
+
+}
+
+// public function switchAccount(Request $request)
+// {
+//     $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+//     if ($user && ($user->role == 'admin' || $user->role == 'owner')) {
+//         $role = $request->input('role');
+//         if ($user->role == $role) {
+//             return redirect()->back()->with('error', 'Bạn đã có vai trò này!');
+//         } else {
+//             $user->update(['role' => $role]); // Cập nhật vai trò
+//             return redirect()->back()->with('success', 'Vai trò đã được switch!');
+//         }
+//     } else {
+//         return redirect()->back()->with('error', 'Bạn không có quyền vào chức năng này!');
+//     }
+// }
+
 }

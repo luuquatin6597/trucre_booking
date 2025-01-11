@@ -66,9 +66,18 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+# trucre_booking
+=======
+>>>>>>> origin/Tai
+<<<<<<< HEAD
 # trucre_booking
 =======
 >>>>>>> origin/Hieu
+<<<<<<< HEAD
 =======
 # trucre_booking
+>>>>>>> origin/Tai
+=======
+>>>>>>> main
 >>>>>>> origin/Tai

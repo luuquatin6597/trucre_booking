@@ -11,6 +11,7 @@ export default {
         "./resources/**/*.vue",
     ],
 
+
     theme: {
         extend: {
             fontFamily: {

@@ -1,6 +1,5 @@
 @extends('admin.index')
 @section('admin')
-
 <?php
 use App\Models\Buildings;
 $buildings = Buildings::all();
@@ -184,24 +183,6 @@ foreach ($buildings as $key => $building) {
                 reader.readAsDataURL(file);
             }
         });
-
-        // $('#addRoomForm').on('submit', function (e) {
-        //     e.preventDefault();
-        //     var formData = new FormData(this);
-        //     $.ajax({
-        //         url: $(this).attr('action'),
-        //         type: $(this).attr('method'),
-        //         data: formData,
-        //         processData: false,
-        //         contentType: false,
-        //         success: function (response) {
-        //             console.log(response);
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.log(error);
-        //         }
-        //     })
-        // });
     });
 </script>
 @endsection

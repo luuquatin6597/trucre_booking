@@ -7,6 +7,7 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
 <x-admin-breadcrumb title="Buildings" subtitle="List building" link="admin.buildings" />
 
 <x-modal-add modalTitle="Add building" route="admin.buildings.add" modalId="addBuildingModal" formId="addBuildingForm">
+    @csrf
     @if (Auth::user()->role == 'owner')
         <x-input-group name="owner" label="Owner" placeholder="Enter owner" type="text" required="true" readonly="true"
             disabled="true"
@@ -23,9 +24,28 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
     <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
     <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
     <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
-    <x-textarea-group name="map" label="Map" placeholder="Enter map" required="true" />
+    <x-textarea-group name="map_link" label="Map" placeholder="Enter map" required="true" />
+    <x-input-group name="certificates[]" label="Certificate" placeholder="Enter certificate" type="file"
+        required="true" />
     <input type="hidden" name="status" value="waiting" id="status" />
 </x-modal-add>
+
+<script>
+    $(document).ready(function () {
+        $('input[type="file"]').on('change', function () {
+            var files = this.files;
+            var images = [];
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    images.push(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
 
 <x-admin-table>
     <thead>
@@ -38,6 +58,7 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
             <th>Address</th>
             <th>Country</th>
             <th>Map</th>
+            <th>Certificate</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -58,8 +79,9 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
                     <td>{{ $building->description }}</td>
                     <td>{{ $building->address }}</td>
                     <td>{{ $building->country }}</td>
-                    <td>{{ $building->map }}</td>
-                    <td>{{ $building->status }}</td>
+                    <td>{{ $building->map_link }}</td>
+
+                    <td class="status-{{ $building->status }}">{{ $building->status }}</td>
                     <td>
                         <button type="button" class="btn btn-info" data-toggle="modal" data-id="{{ $building->id }}"
                             data-action="{{ route('admin.buildings.update', $building->id) }}" data-target="#editBuildingModal">
@@ -108,7 +130,7 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
                 return false;
             },
             open: function () {
-                $('.ui-autocomplete').css('position', 'absolute'); // Đảm bảo danh sách gợi ý nằm đúng vị trí
+                $('.ui-autocomplete').css('position', 'absolute');
             }
         });
 
@@ -117,9 +139,9 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
                     <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
                     <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
                  </div>`;
-            $('#alert-container').html(alert); // Thêm alert vào container
+            $('#alert-container').html(alert);
             setTimeout(function () {
-                $('.alert').alert('close'); // Đóng alert sau 5 giây
+                $('.alert').alert('close');
             }, 5000);
         }
     });
@@ -129,7 +151,8 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
     <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
     <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
     <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
-    <x-textarea-group name="map" label="Map" placeholder="Enter map link or embed code" required="true" />
+    <x-textarea-group name="map_link" label="Map" placeholder="Enter map link or embed code" required="true" />
+    <x-input-group name="certificate" label="Certificate" placeholder="Enter certificate" type="file" required="true" />
     <x-select-group name="status" label="Status" placeholder="Enter status" :options="$status" required="true" />
 </x-modal-edit>
 
@@ -138,6 +161,8 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
 </x-modal-delete>
 
 <script>
+
+
     $('#editBuildingModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var buildingId = button.data('id');
@@ -149,7 +174,8 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
             modal.find('[name="description"]').val(building.description);
             modal.find('[name="address"]').val(building.address);
             modal.find('[name="country"]').val(building.country);
-            modal.find('[name="map"]').val(building.map);
+            modal.find('[name="map_link"]').val(building.map_link);
+            modal.find('[name="certificate"]').val(building.certificate);
             modal.find('[name="status"]').val(building.status);
             modal.find('form').attr('action', actionUrlTemplate);
         });
@@ -179,7 +205,7 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
     //     });
     // });
 
-    // Modal Delete Building
+
     $('#deleteBuildingModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var buildingId = button.data('id');
@@ -224,6 +250,4 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
         }, 5000);
     }
 </script>
-
-
 @endsection

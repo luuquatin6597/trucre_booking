@@ -29,6 +29,24 @@
                             id="pt"></i> <span class="ms-1"> Portuguese </span></a>
                     <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-es" title="es"
                             id="es"></i> <span class="ms-1"> Spanish </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-ru" title="ru"
+                            id="ru"></i> <span class="ms-1"> Russian </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-tr" title="tr"
+                            id="tr"></i> <span class="ms-1"> Turkish </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-cn" title="cn"
+                            id="cn"></i> <span class="ms-1"> Chinese </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-jp" title="jp"
+                            id="jp"></i> <span class="ms-1"> Japanese </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-kr" title="kr"
+                            id="kr"></i> <span class="ms-1"> Korean </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-in" title="in"
+                            id="in"></i> <span class="ms-1"> India </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-id" title="id"
+                            id="id"></i> <span class="ms-1"> Indonesian </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-pt" title="pt"
+                            id="pt"></i> <span class="ms-1"> Portuguese </span></a>
+                    <a href="javascript:;" class="dropdown-item py-2"><i class="flag-icon flag-icon-vn" title="vn"
+                            id="kr"></i> <span class="ms-1"> Vietnamese </span></a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -41,7 +59,7 @@
                         <p class="mb-0 fw-bold">Web Apps</p>
                         <a href="javascript:;" class="text-muted">Edit</a>
                     </div>
-                    <div class="row g-0 p-1">
+                    {{-- <div class="row g-0 p-1">
                         <div class="col-3 text-center">
                             <a href="pages/apps/chat.html"
                                 class="dropdown-item d-flex flex-column align-items-center justify-content-center wd-70 ht-70"><i
@@ -70,13 +88,13 @@
                                 <p class="tx-12">Profile</p>
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
                         <a href="javascript:;">View all</a>
                     </div>
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i data-feather="mail"></i>
@@ -228,7 +246,7 @@
                         <a href="javascript:;">View all</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -258,16 +276,19 @@
                             </a>
                         </li>
                         <li class="dropdown-item py-2">
-                            <a href="javascript:;" class="text-body ms-0">
+                            <a href="javascript:;" class="text-body ms-0" onclick="event.preventDefault(); document.getElementById('switchUser').submit();">
                                 <i class="me-2 icon-md" data-feather="repeat"></i>
                                 <span>Switch User</span>
                             </a>
                         </li>
                         <li class="dropdown-item py-2">
-                            <a href="javascript:;" class="text-body ms-0">
+                            <a href="{{ route('logout') }}" class="text-body ms-0" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="me-2 icon-md" data-feather="log-out"></i>
                                 <span>Log Out</span>
                             </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
                         </li>
                     </ul>
                 </div>

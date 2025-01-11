@@ -7,11 +7,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminRoomsController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\AdminBuildingsController;
+use App\Http\Controllers\AdminCertificatesController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BuildingController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
 
@@ -46,6 +48,10 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::post('/admin/buildings/add', [AdminBuildingsController::class, 'addBuilding'])->name('admin.buildings.add');
     Route::put('/admin/buildings/{id}', [AdminBuildingsController::class, 'updateBuilding'])->name('admin.buildings.update');
     Route::delete('/admin/buildings/{id}', [AdminBuildingsController::class, 'deleteBuilding'])->name('admin.buildings.destroy');
+    Route::get('/admin/buildings/{id}/upload', [AdminCertificatesController::class, 'uploadCertificate'])->name('admin.buildings.upload');
+    Route::post('/admin/buildings/{id}/upload', [AdminCertificatesController::class, 'storeCertificate'])->name('admin.rooms.store');
+    Route::post('/admin/buildings/{id}/remove', [AdminCertificatesController::class, 'deleteCertificate'])->name('admin.rooms.remove');
+
 });
 
 Route::middleware(['auth', 'role:admin,owner'])->group(function () {
@@ -60,8 +66,8 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::put('/admin/rooms/{id}', [AdminRoomsController::class, 'updateRoom'])->name('admin.rooms.update');
     Route::delete('/admin/rooms/{id}', [AdminRoomsController::class, 'deleteRoom'])->name('admin.rooms.destroy');
 });
-
-
+Route::post('/logout', 'Auth\AdminUsersController@logout')->name('logout');
+Route::post('/switch-account', 'UserController@switchAccount')->middleware('role:admin,owner');
 Route::get('/register', [UserController::class, 'showForm'])->name('register');
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
 
@@ -80,3 +86,16 @@ Route::get('/resend-otp', [UserController::class, 'resendOtp'])->name('resend.ot
 
 Route::get('/reset-password', [UserController::class, 'showResetPasswordForm'])->name('reset.password');
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('reset.password.post');
+
+
+
+Route::prefix('admin')->middleware('auth')->group(function () {
+    // Route để xem danh sách chứng chỉ
+    Route::get('/certificates', [AdminCertificatesController::class, 'index'])->name('admin.certificates');
+
+    // Route chấp nhận chứng chỉ
+    Route::post('/certificates/{id}/accept', [AdminCertificatesController::class, 'accept'])->name('admin.certificates.accept');
+
+    // Route từ chối chứng chỉ
+    Route::post('/certificates/{id}/reject', [AdminCertificatesController::class, 'reject'])->name('admin.certificates.reject');
+});

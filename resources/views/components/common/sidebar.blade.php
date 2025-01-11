@@ -26,7 +26,7 @@ $adminMenu = [
             ],
             [
                 'name' => 'Certificates',
-                'route' => '',
+                'route' => 'admin.certificates',
             ]
         ]
     ],

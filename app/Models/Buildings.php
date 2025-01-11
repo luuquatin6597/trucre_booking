@@ -15,7 +15,7 @@ class Buildings extends Model
         'description',
         'address',
         'country',
-        'map',
+        'map_link',
         'status'
     ];
 
@@ -28,5 +28,4 @@ class Buildings extends Model
     {
         return $this->hasMany(Rooms::class);
     }
-
 }

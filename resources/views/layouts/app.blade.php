@@ -14,6 +14,8 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
 </head>
 
 <body class="">
@@ -22,6 +24,14 @@
     <main>
         {{ $slot }}
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("logout-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+                document.getElementById("logout-form").submit();
+            });
+        });
+    </script>
 </body>
 
 </html>

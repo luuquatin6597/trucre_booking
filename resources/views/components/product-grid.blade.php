@@ -11,8 +11,10 @@
             </a>
         </div>
         <div class="grid-card grid grid-cols-4 gap-24">
-            @foreach ($products as $product)
-                <x-product-card />
+            @foreach ($products as $key => $product)
+                @if($key <= $max)
+                    <x-product-card :product="$product" />
+                @endif
             @endforeach
         </div>
     </div>

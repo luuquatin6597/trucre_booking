@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminBookingsController;
 use App\Http\Controllers\GoogleCalendarController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ProfileController;
@@ -56,8 +57,8 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::put('/admin/buildings/{id}', [AdminBuildingsController::class, 'updateBuilding'])->name('admin.buildings.update');
     Route::delete('/admin/buildings/{id}', [AdminBuildingsController::class, 'deleteBuilding'])->name('admin.buildings.destroy');
     Route::get('/admin/buildings/{id}/upload', [AdminCertificatesController::class, 'uploadCertificate'])->name('admin.buildings.upload');
-    Route::post('/admin/buildings/{id}/upload', [AdminCertificatesController::class, 'storeCertificate'])->name('admin.rooms.store');
-    Route::post('/admin/buildings/{id}/remove', [AdminCertificatesController::class, 'deleteCertificate'])->name('admin.rooms.remove');
+    Route::post('/admin/buildings/{id}/upload', [AdminCertificatesController::class, 'storeCertificate'])->name('admin.buildings.store');
+    Route::post('/admin/buildings/{id}/remove', [AdminCertificatesController::class, 'deleteCertificate'])->name('admin.building.remove');
 
 });
 
@@ -114,11 +115,14 @@ Route::post('/profile', [UserController::class, 'updateProfile'])->name('profile
 Route::get('/room/{id}', [FrontRoomController::class, 'getRoom'])->name('room.room');
 
 Route::get('/booking', [FrontBookingController::class, 'viewBooking'])->name('booking.view');
-Route::post('/booking/prepare', [FrontBookingController::class, 'prepare'])->name('booking.prepare');
-Route::post('/booking/store', [FrontBookingController::class, 'store'])->name('booking.store');
-Route::post('/payment/vnpay', [PaymentController::class, 'vnpayPayment'])->name('payment.vnpay');
+Route::post('/booking/method', [FrontBookingController::class, 'paymentMethod'])->name('booking.method');
+Route::get('/payment/vnpay', [PaymentController::class, 'vnpayPayment'])->name('payment.vnpay');
+Route::get('/payment/paypal', [PaypalController::class, 'paypalPayment'])->name('payment.paypal');
 Route::get('/booking/checkout-return', [PaymentController::class, 'checkoutReturn'])->name('payment.return');
 Route::get('/booking/booking-content', [PaymentController::class, 'sendEmailBooking'])->name('payment.content');
+Route::get('paypal/return', [PaypalController::class, 'paypalReturn'])->name('paypal.return');
+Route::get('paypal/cancel', [PaypalController::class, 'paypalCancel'])->name('paypal.cancel');
+
 
 Route::get('/contact', [HomepageController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomepageController::class, 'sendMail']);
@@ -133,12 +137,7 @@ Route::post('/set-currency', [App\Http\Controllers\CurrencyController::class, 's
 
 
 Route::prefix('admin')->middleware('auth')->group(function () {
-    // Route để xem danh sách chứng chỉ
     Route::get('/certificates', [AdminCertificatesController::class, 'index'])->name('admin.certificates');
-
-    // Route chấp nhận chứng chỉ
     Route::post('/certificates/{id}/accept', [AdminCertificatesController::class, 'accept'])->name('admin.certificates.accept');
-
-    // Route từ chối chứng chỉ
     Route::post('/certificates/{id}/reject', [AdminCertificatesController::class, 'reject'])->name('admin.certificates.reject');
 });

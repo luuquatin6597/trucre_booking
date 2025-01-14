@@ -2,30 +2,30 @@
 $navList = [
     [
         'name' => 'Home',
-        'url' => '/',
+        'url' => route('homepage'),
         'active' => true,
         'child' => []
     ],
     [
         'name' => 'Explore',
-        'url' => '/',
+        'url' => route('categories.index'), // Sử dụng route helper nếu có
         'active' => false,
         'child' => [
             [
-                'name' => 'Explore all',
-                'url' => '/',
-                'img' => 'assets/img/dropdown-menu-1.png',
-                'active' => false
-            ],
-            [
                 'name' => 'Meeting room',
-                'url' => '/',
+                'url' => route('categories.index', ['type' => 'meeting-room']), // Thêm tham số type=meeting-room
                 'img' => 'assets/img/dropdown-menu-2.png',
                 'active' => false
             ],
             [
                 'name' => 'Conference room',
-                'url' => '/',
+                'url' => route('categories.index', ['type' => 'conference-room']), // Thêm tham số type=conference-room
+                'img' => 'assets/img/dropdown-menu-1.png',
+                'active' => false
+            ],
+            [
+                'name' => 'Explore all',
+                'url' => route('categories.index'), // Dẫn tới trang danh mục tổng
                 'img' => '',
                 'active' => false
             ]
@@ -33,11 +33,11 @@ $navList = [
     ],
     [
         'name' => 'Partner',
-        'url' => '/',
+        'url' => route('owner.dashboard'),
         'active' => false,
         'child' => []
     ],
-]
+];
 ?>
 
 <header class="fixed top-0 left-0 z-50 w-full bg-[rgb(255,255,255,0.9)]">

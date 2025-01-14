@@ -10,7 +10,7 @@
         @include('components.front-breadcrumb', ['title' => 'Booking'])
         <div class="gap-[100px] pt-24">
 
-            <form id="bookingForm" action="{{ route('payment.vnpay') }}" method="POST">
+            <form id="bookingForm" action="{{ route('booking.method') }}" method="POST">
                 @csrf
                 <div class="room-info">
                     <h2 class="room-title text-heading-3 font-bold pb-24">{{$room->name}}</h2>
@@ -36,7 +36,6 @@
                     </div>
                     <div class="info-booking w-[calc(60%-50px)]">
                         <input id="room_id" type="hidden" name="room_id" value="{{$room->id}}">
-                        <input id="frequency" type="hidden" name="frequency" value="{{$params['frequency']}}">
                         <input id="bookingType" type="hidden" name="bookingType" value="{{$params['bookingType']}}">
                         <input id="sessionType" type="hidden" name="sessionType" value="{{$params['sessionType']}}">
 
@@ -102,41 +101,13 @@
                 </div>
 
                 <div class="flex gap-24 pt-24">
-                    <x-primary-button type="submit" class="w-full" name="redirect" onclick="prepareBooking(event)">
+                    <x-primary-button type="submit" class="w-full" name="payment_method" value="vnpay"
+                        onclick="prepareBooking(event)">
                         VN PAY
-                        <svg width="35" height="35" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px"
-                            viewBox="0 0 48 48" id="b">
-                            <defs>
-                                <style>
-                                    .c {
-                                        stroke-linecap: round;
-                                    }
-
-                                    .c,
-                                    .d {
-                                        fill: none !important;
-                                        stroke: #fff;
-
-                                        stroke-linejoin: round;
-                                    }
-                                </style>
-                            </defs>
-                            <path class="d"
-                                d="m28.6222,37.7222l14.4444-14.4444c.5778-.5778.5778-1.7333,0-2.3111l-8.6667-8.6667c-.5778-.5778-1.7333-.5778-2.3111,0l-6.3556,6.3556-9.2444-9.2444c-.5778-.5778-1.7333-.5778-2.3111,0l-9.2444,9.2444c-.5778.5778-.5778,1.7333,0,2.3111l16.7556,16.7556c1.7333,1.7333,5.2,1.7333,6.9333,0Z" />
-                            <path class="c" d="m25.7333,18.6556l-8.0889,8.0889c-2.3111,2.3111-4.6222,2.3111-6.9333,0" />
-                            <g>
-                                <path class="c"
-                                    d="m18.2222,30.7889c-1.1556,1.1556-2.3111,1.1556-3.4667,0m22.5333-15.6c-1.262-1.1556-2.8889-.5778-4.0444.5778l-15.0222,15.0222" />
-                                <path class="c"
-                                    d="m18.2222,15.7667c-4.6222-4.6222-10.4,1.1556-5.7778,5.7778l5.2,5.2-5.2-5.2" />
-                                <path class="c" d="m23.4222,20.9667l-4.0444-4.0444" />
-                                <path class="c"
-                                    d="m21.6889,22.7l-4.6222-4.6222c-.5778-.5778-1.4444-1.4444-2.3111-1.1556" />
-                                <path class="c"
-                                    d="m14.7556,20.3889c-.5778-.5778-1.4444-1.4444-1.1556-2.3111m5.7778,6.9333l-4.6222-4.6222" />
-                            </g>
-                            <script xmlns="" />
-                        </svg>
+                    </x-primary-button>
+                    <x-primary-button type="submit" class="w-full" name="payment_method" value="paypal"
+                        onclick="prepareBooking(event)">
+                        PAY PAL
                     </x-primary-button>
                 </div>
             </form>
@@ -249,7 +220,6 @@
             const priceInput = document.getElementById('priceInput');
             const allDayPrice = parseFloat(productPrice.dataset.allDayPrice);
             const sessionPrice = parseFloat(productPrice.dataset.sessionPrice);
-            const frequencyInput = document.getElementById('frequency');
             const bookingTypeInput = document.getElementById('bookingType');
             const sessionTypeInput = document.getElementById('sessionType');
             const exchangeRate = parseFloat(productPrice.dataset.exchangeRate);
@@ -259,45 +229,42 @@
                 case 'all-day':
                     priceElement.textContent = format_currency(allDayPrice * exchangeRate, currentCurrency);
                     priceInput.value = allDayPrice;
-                    frequencyInput.value = 'All day';
                     bookingTypeInput.value = 'All day';
                     sessionTypeInput.value = 'All day';
                     break;
                 case 'morning':
                     priceElement.textContent = format_currency(sessionPrice * exchangeRate, currentCurrency);
                     priceInput.value = sessionPrice;
-                    frequencyInput.value = 'Session';
                     bookingTypeInput.value = 'Session';
                     sessionTypeInput.value = 'Morning';
                     break;
                 case 'afternoon':
                     priceElement.textContent = format_currency(sessionPrice * exchangeRate, currentCurrency);
                     priceInput.value = sessionPrice;
-                    frequencyInput.value = 'Session';
                     bookingTypeInput.value = 'Session';
                     sessionTypeInput.value = 'Afternoon';
                     break;
                 case 'evening':
                     priceElement.textContent = format_currency(sessionPrice * exchangeRate, currentCurrency);
                     priceInput.value = sessionPrice;
-                    frequencyInput.vãalue = 'Session';
                     bookingTypeInput.value = 'Session';
                     sessionTypeInput.value = 'Evening';
                     break;
             }
             updateTotalPrice();
         }
-        function getDatesToCheck(startAt, endAt, frequency) {
+        function getDatesToCheck(startAt, endAt) {
             let datesToCheck = [];
             const startDate = new Date(startAt);
             const endDate = new Date(endAt);
             let currentDate = new Date(startDate);
+            const bookingTypeInput = document.getElementById('bookingType');
 
             while (currentDate <= endDate) {
                 datesToCheck.push(new Date(currentDate));
-                if (frequency === 'All day') {
+                if (bookingTypeInput.value === 'All day') {
                     currentDate.setDate(currentDate.getDate() + 1);
-                } else if (frequency === 'Session') {
+                } else if (bookingTypeInput.value === 'Session') {
                     currentDate.setDate(currentDate.getDate() + 1);
                 }
             }
@@ -338,8 +305,6 @@
             const totalPriceInput = document.getElementById('totalPriceInput');
             const taxElement = document.getElementById('taxElement');
             const taxInput = document.getElementById('taxInput');
-
-            const frequencyInput = document.getElementById('frequency');
             const startDate = startAtInput.datepicker("getDate");
             const endDate = endAtInput.datepicker("getDate");
             const productPrice = document.querySelector('.product-price');
@@ -347,13 +312,14 @@
             const sessionPrice = parseFloat(productPrice.dataset.sessionPrice);
             const exchangeRate = parseFloat(productPrice.dataset.exchangeRate);
             const currentCurrency = '{{ session('currency') ?? 'USD' }}';
+            const bookingTypeInput = document.getElementById('bookingType');
 
             if (startDate && endDate) {
                 const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
                 const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
                 let totalPrice = 0;
                 let tax = 0;
-                if (frequencyInput.value === 'All day') {
+                if (bookingTypeInput.value === 'All day') {
                     tax = dayDiff * allDayPrice * 0.1;
                     totalPrice = dayDiff * allDayPrice + tax;
                     totalPriceInput.value = dayDiff * allDayPrice;
@@ -387,7 +353,6 @@
 
             const startAt = params.get('startAt');
             const endAt = params.get('endAt');
-            const frequency = params.get('frequency');
 
             const disabledDates = @json($allBookedDates).map(function (date) {
                 try {
@@ -410,23 +375,18 @@
             price = price * exchangeRate;
             totalPrice = totalPrice * exchangeRate;
             tax = tax * exchangeRate;
-            console.log("giá đã đổi:", price, totalPrice, tax)
 
             priceInput.value = Math.round(price);
             totalPriceInput.value = Math.round(totalPrice);
             taxInput.value = Math.round(tax);
-            console.log("giá đã làm tròn:", priceInput.value, totalPriceInput.value, taxInput.value)
 
-            //debugger;
-            const datesToCheck = getDatesToCheck(startAt, endAt, frequency);
+            const datesToCheck = getDatesToCheck(startAt, endAt);
             const hasConflict = checkDateConflicts(datesToCheck, disabledDates);
             if (hasConflict) {
                 alert('The selected date range is not available. Please choose another one.');
                 event.preventDefault();
                 return;
             }
-
-            // Submit the form instead of redirecting
             form.submit();
         }
 

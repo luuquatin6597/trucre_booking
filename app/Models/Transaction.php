@@ -21,7 +21,6 @@ class Transaction extends Model
         'room_id',
         'price',
         'tax',
-        'frequency',
         'startAt',
         'endAt',
         'bookingType',

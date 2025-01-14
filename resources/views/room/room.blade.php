@@ -35,7 +35,6 @@
                 <form id="bookingForm" action="{{ route('booking.view') }}" method="GET">
                     @csrf
                     <input id="room_id" type="hidden" name="room_id" value="{{$room->id}}">
-                    <input id="frequency" type="hidden" name="frequency" value="All day">
                     <input id="bookingType" type="hidden" name="bookingType" value="All day">
                     <input id="sessionType" type="hidden" name="sessionType" value="All day">
 
@@ -94,7 +93,7 @@
                     </p>
 
                     <div class="flex gap-24 pt-24">
-                        <x-primary-button type="submit" class="w-full" onclick="prepareBooking(event)">
+                        <x-primary-button type="submit" class="w-full">
                             Book Now
                         </x-primary-button>
                     </div>
@@ -223,7 +222,6 @@
             const productPrice = document.querySelector('.product-price');
             const allDayPrice = parseFloat(productPrice.dataset.allDayPrice);
             const sessionPrice = parseFloat(productPrice.dataset.sessionPrice);
-            const frequencyInput = document.getElementById('frequency');
             const bookingTypeInput = document.getElementById('bookingType');
             const sessionTypeInput = document.getElementById('sessionType');
             const exchangeRate = parseFloat(productPrice.dataset.exchangeRate);
@@ -232,25 +230,21 @@
             switch (tabId) {
                 case 'all-day':
                     priceElement.textContent = format_currency(allDayPrice * exchangeRate, currentCurrency);
-                    frequencyInput.value = 'All day';
                     bookingTypeInput.value = 'All day';
                     sessionTypeInput.value = 'All day';
                     break;
                 case 'morning':
                     priceElement.textContent = format_currency(sessionPrice * exchangeRate, currentCurrency);
-                    frequencyInput.value = 'Session';
                     bookingTypeInput.value = 'Session';
                     sessionTypeInput.value = 'Morning';
                     break;
                 case 'afternoon':
                     priceElement.textContent = format_currency(sessionPrice * exchangeRate, currentCurrency);
-                    frequencyInput.value = 'Session';
                     bookingTypeInput.value = 'Session';
                     sessionTypeInput.value = 'Afternoon';
                     break;
                 case 'evening':
                     priceElement.textContent = format_currency(sessionPrice * exchangeRate, currentCurrency);
-                    frequencyInput.value = 'Session';
                     bookingTypeInput.value = 'Session';
                     sessionTypeInput.value = 'Evening';
                     break;
@@ -261,7 +255,6 @@
             const startAtInput = $("#startAt");
             const endAtInput = $("#endAt");
             const totalPriceElement = document.getElementById('totalPrice');
-            const frequencyInput = document.getElementById('frequency');
             const startDate = startAtInput.datepicker("getDate");
             const endDate = endAtInput.datepicker("getDate");
             const productPrice = document.querySelector('.product-price');
@@ -269,12 +262,13 @@
             const sessionPrice = parseFloat(productPrice.dataset.sessionPrice);
             const exchangeRate = parseFloat(productPrice.dataset.exchangeRate);
             const currentCurrency = '{{ session('currency') ?? 'USD' }}';
+            const sessionTypeInput = document.getElementById('sessionType');
 
             if (startDate && endDate) {
                 const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
                 const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
                 let totalPrice = 0;
-                if (frequencyInput.value === 'All day') {
+                if (sessionTypeInput.value === 'All day') {
                     totalPrice = dayDiff * allDayPrice;
                 } else {
                     totalPrice = dayDiff * sessionPrice;

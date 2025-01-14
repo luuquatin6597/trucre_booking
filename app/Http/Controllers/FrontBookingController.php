@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Bookings;
 use App\Models\Rooms;
-use Arr;
+use Illuminate\Support\Arr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class FrontBookingController extends Controller
 {
@@ -14,7 +16,6 @@ class FrontBookingController extends Controller
     {
         $validatedData = $request->validate([
             'room_id' => 'required|integer',
-            'frequency' => 'required|in:All day,Session',
             'bookingType' => 'required|in:All day,Session',
             'sessionType' => 'nullable|in:All day,Morning,Afternoon,Evening',
             'startAt' => 'required|date_format:m/d/Y',
@@ -48,29 +49,34 @@ class FrontBookingController extends Controller
         return view('booking.view', compact('room', 'params', 'allBookedDates'));
     }
 
-    public function store(Request $request)
+    public function paymentMethod(Request $request)
     {
-        $request->validate([
-            'room_id' => 'required|exists:rooms,id',
-            'startAt' => 'required|date_format:m/d/Y',
-            'endAt' => 'required|date_format:m/d/Y',
-            'frequency' => 'required|in:All_day,Session',
-        ]);
-        session(['booking_info' => $request->all()]);
-        session(['booking_total' => $request->total]);
-        return redirect()->route('vnpay.prepare', ['total' => $request->total, 'code' => $request->room_id]);
-    }
+        try {
+            if (!Auth::check()) {
+                Session::put('booking_params', $request->all());
+                Session::put('redirect_to', route('booking.view'));
+                return redirect()->route('login');
+            }
 
-    public function prepare(Request $request)
-    {
-        $request->validate([
-            'room_id' => 'required|exists:rooms,id',
-            'startAt' => 'required|date_format:m/d/Y',
-            'endAt' => 'required|date_format:m/d/Y',
-            'frequency' => 'required|in:All_day,Session',
-        ]);
+            $bookingInfo = $request->all();
 
-        $params = $request->all();
-        return redirect()->route('booking.view', $params);
+            if ($bookingInfo['payment_method'] === 'vnpay') {
+                $bookingInfo['price'] = $bookingInfo['price'] * getExchangeRate(session('currency'), env('VNPAY_CURRENCY'));
+                $bookingInfo['totalPrice'] = $bookingInfo['totalPrice'] * getExchangeRate(session('currency'), env('VNPAY_CURRENCY'));
+                $bookingInfo['tax'] = $bookingInfo['tax'] * getExchangeRate(session('currency'), env('VNPAY_CURRENCY'));
+
+                return redirect()->route('payment.vnpay', $bookingInfo);
+
+            } elseif ($bookingInfo['payment_method'] === 'paypal') {
+                $bookingInfo['price'] = $bookingInfo['price'] * getExchangeRate(session('currency'), env('PAYPAL_CURRENCY'));
+                $bookingInfo['totalPrice'] = $bookingInfo['totalPrice'] * getExchangeRate(session('currency'), env('PAYPAL_CURRENCY'));
+                $bookingInfo['tax'] = $bookingInfo['tax'] * getExchangeRate(session('currency'), env('PAYPAL_CURRENCY'));
+
+                return redirect()->route('payment.paypal', $bookingInfo);
+
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

@@ -77,8 +77,8 @@ $steps = [
                 @endforeach
             </div>
 
-            <div class="flex justify-center">
-                <x-button-with-icon class="mt-[50px]">
+            <form action="{{ route('categories.index') }}" class="flex justify-center">
+                <x-button-with-icon type="submit" class="mt-[50px]">
                     START YOUR JOURNEY
                     <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -86,7 +86,7 @@ $steps = [
                             fill="white" />
                     </svg>
                 </x-button-with-icon>
-            </div>
+            </form>
         </div>
     </div>
 </div>

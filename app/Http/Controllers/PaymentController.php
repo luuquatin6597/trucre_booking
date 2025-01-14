@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Mail;
-use Session;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\GoogleCalendarController;
 
 
@@ -28,17 +28,7 @@ class PaymentController extends Controller
 
     public function vnpayPayment(Request $request)
     {
-        // Kiểm tra xem người dùng đã đăng nhập chưa
-        if (!Auth::check()) {
-            Session::put('booking_params', $request->all());
-            Session::put('redirect_to', route('booking.view'));
-            return redirect()->route('login');
-        }
-
         $bookingInfo = $request->all();
-        $bookingInfo['price'] = $bookingInfo['price'] * getExchangeRate(session('currency'), 'VND');
-        $bookingInfo['totalPrice'] = $bookingInfo['totalPrice'] * getExchangeRate(session('currency'), 'VND');
-        $bookingInfo['tax'] = $bookingInfo['tax'] * getExchangeRate(session('currency'), 'VND');
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = route('payment.return');
@@ -99,33 +89,29 @@ class PaymentController extends Controller
             ,
             'data' => $vnp_Url
         );
-        if (isset($_POST['redirect'])) {
-            // Tạo transaction
-            Transaction::create([
-                'user_id' => Auth::user()->id,
-                'transaction_id' => $vnp_TxnRef,
-                'payment_method' => 'vnpay',
-                'currency' => 'VND',
-                'status' => 'pending',
-                'room_id' => $bookingInfo['room_id'],
-                'price' => $bookingInfo['price'],
-                'tax' => $bookingInfo['tax'],
-                'totalPrice' => $bookingInfo['totalPrice'],
-                'frequency' => $bookingInfo['frequency'],
-                'startAt' => Carbon::createFromFormat('m/d/Y', $bookingInfo['startAt'])->toDateString(),
-                'endAt' => Carbon::createFromFormat('m/d/Y', $bookingInfo['endAt'])->toDateString(),
-                'bookingType' => $bookingInfo['bookingType'],
-                'sessionType' => $bookingInfo['sessionType'],
-                'userName' => $bookingInfo['userName'],
-                'userPhone' => $bookingInfo['userPhone'],
-                'userEmail' => $bookingInfo['userEmail'],
-            ]);
 
-            header('Location: ' . $vnp_Url);
-            die();
-        } else {
-            echo json_encode($returnData);
-        }
+        // Tạo transaction
+        Transaction::create([
+            'user_id' => Auth::user()->id,
+            'transaction_id' => $vnp_TxnRef,
+            'payment_method' => $bookingInfo['payment_method'],
+            'currency' => 'VND',
+            'status' => 'pending',
+            'room_id' => $bookingInfo['room_id'],
+            'price' => $bookingInfo['price'],
+            'tax' => $bookingInfo['tax'],
+            'totalPrice' => $bookingInfo['totalPrice'],
+            'startAt' => Carbon::createFromFormat('m/d/Y', $bookingInfo['startAt'])->toDateString(),
+            'endAt' => Carbon::createFromFormat('m/d/Y', $bookingInfo['endAt'])->toDateString(),
+            'bookingType' => $bookingInfo['bookingType'],
+            'sessionType' => $bookingInfo['sessionType'],
+            'userName' => $bookingInfo['userName'],
+            'userPhone' => $bookingInfo['userPhone'],
+            'userEmail' => $bookingInfo['userEmail'],
+        ]);
+
+        header('Location: ' . $vnp_Url);
+        die();
     }
 
     public function checkoutReturn(Request $request)

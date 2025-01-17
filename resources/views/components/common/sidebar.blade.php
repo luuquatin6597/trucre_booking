@@ -49,7 +49,7 @@ $adminMenu = [
             ],
             [
                 'name' => 'Certificates',
-                'route' => '',
+                'route' => 'admin.certificates',
             ]
         ]
     ],
@@ -120,7 +120,7 @@ $ownerMenu = [
             ],
             [
                 'name' => 'Certificates',
-                'route' => '',
+                'route' => 'admin.certificates',
             ]
         ]
     ],
@@ -156,11 +156,11 @@ $ownerMenu = [
             class="sidebar-brand block h-[40px]">
             <x-application-logo style="height: 40px; width: auto;" />
         </a>
-        <!-- <div class="sidebar-toggler not-active">
+        <div class="sidebar-toggler not-active">
             <span></span>
             <span></span>
             <span></span>
-        </div> -->
+        </div>
     </div>
     <div class="sidebar-body">
         <ul class="nav">

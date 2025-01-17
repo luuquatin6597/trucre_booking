@@ -30,10 +30,10 @@ class PaymentController extends Controller
     {
         $bookingInfo = $request->all();
 
-        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        $vnp_Url = env('VNPAY_URL');
         $vnp_Returnurl = route('payment.return');
-        $vnp_TmnCode = "WXTK4S85"; //Mã website tại VNPAY
-        $vnp_HashSecret = "KMX885Z0XZDJNG5CNMH7089PTCTOM39B"; //Chuỗi bí mật
+        $vnp_TmnCode = env('VNPAY_TMN_CODE'); //Mã website tại VNPAY
+        $vnp_HashSecret = env('VNPAY_HASH_SECRET'); //Chuỗi bí mật
         $vnp_TxnRef = Str::uuid();
         $vnp_OrderInfo = "Thanh toan hoa don " . $vnp_TxnRef;
         $vnp_OrderType = "billpayment";
@@ -83,10 +83,8 @@ class PaymentController extends Controller
         }
 
         $returnData = array(
-            'code' => '00'
-            ,
-            'message' => 'success'
-            ,
+            'code' => '00',
+            'message' => 'success',
             'data' => $vnp_Url
         );
 

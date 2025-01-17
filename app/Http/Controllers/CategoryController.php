@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Buildings;
 use Illuminate\Http\Request;
 use App\Models\Rooms;
 
@@ -22,204 +23,7 @@ class CategoryController extends Controller
         $maxPrice = $request->get('maxPrice'); // Giá cao nhất
         $tag = $request->input('tag');
 
-        $items = [
-            'Afghanistan',
-            'Albania',
-            'Algeria',
-            'Andorra',
-            'Angola',
-            'Antigua and Barbuda',
-            'Argentina',
-            'Armenia',
-            'Australia',
-            'Austria',
-            'Azerbaijan',
-            'Bahamas',
-            'Bahrain',
-            'Bangladesh',
-            'Barbados',
-            'Belarus',
-            'Belgium',
-            'Belize',
-            'Benin',
-            'Bhutan',
-            'Bolivia',
-            'Bosnia and Herzegovina',
-            'Botswana',
-            'Brazil',
-            'Brunei',
-            'Bulgaria',
-            'Burkina Faso',
-            'Burundi',
-            'Cabo Verde',
-            'Cambodia',
-            'Cameroon',
-            'Canada',
-            'Central African Republic',
-            'Chad',
-            'Chile',
-            'China',
-            'Colombia',
-            'Comoros',
-            'Congo (Republic)',
-            'Congo (Democratic Republic)',
-            'Costa Rica',
-            'Croatia',
-            'Cuba',
-            'Cyprus',
-            'Czech Republic',
-            'Denmark',
-            'Djibouti',
-            'Dominica',
-            'Dominican Republic',
-            'East Timor',
-            'Ecuador',
-            'Egypt',
-            'El Salvador',
-            'Equatorial Guinea',
-            'Eritrea',
-            'Estonia',
-            'Eswatini',
-            'Ethiopia',
-            'Fiji',
-            'Finland',
-            'France',
-            'Gabon',
-            'Gambia',
-            'Georgia',
-            'Germany',
-            'Ghana',
-            'Greece',
-            'Grenada',
-            'Guatemala',
-            'Guinea',
-            'Guinea-Bissau',
-            'Guyana',
-            'Haiti',
-            'Honduras',
-            'Hungary',
-            'Iceland',
-            'India',
-            'Indonesia',
-            'Iran',
-            'Iraq',
-            'Ireland',
-            'Israel',
-            'Italy',
-            'Jamaica',
-            'Japan',
-            'Jordan',
-            'Kazakhstan',
-            'Kenya',
-            'Kiribati',
-            'North Korea',
-            'South Korea',
-            'Kosovo',
-            'Kuwait',
-            'Kyrgyzstan',
-            'Laos',
-            'Latvia',
-            'Lebanon',
-            'Lesotho',
-            'Liberia',
-            'Libya',
-            'Liechtenstein',
-            'Lithuania',
-            'Luxembourg',
-            'Madagascar',
-            'Malawi',
-            'Malaysia',
-            'Maldives',
-            'Mali',
-            'Malta',
-            'Marshall Islands',
-            'Mauritania',
-            'Mauritius',
-            'Mexico',
-            'Micronesia',
-            'Moldova',
-            'Monaco',
-            'Mongolia',
-            'Montenegro',
-            'Morocco',
-            'Mozambique',
-            'Myanmar',
-            'Namibia',
-            'Nauru',
-            'Nepal',
-            'Netherlands',
-            'New Zealand',
-            'Nicaragua',
-            'Niger',
-            'Nigeria',
-            'North Macedonia',
-            'Norway',
-            'Oman',
-            'Pakistan',
-            'Palau',
-            'Palestine',
-            'Panama',
-            'Papua New Guinea',
-            'Paraguay',
-            'Peru',
-            'Philippines',
-            'Poland',
-            'Portugal',
-            'Qatar',
-            'Romania',
-            'Russia',
-            'Rwanda',
-            'Saint Kitts and Nevis',
-            'Saint Lucia',
-            'Saint Vincent and the Grenadines',
-            'Samoa',
-            'San Marino',
-            'Sao Tome and Principe',
-            'Saudi Arabia',
-            'Senegal',
-            'Serbia',
-            'Seychelles',
-            'Sierra Leone',
-            'Singapore',
-            'Slovakia',
-            'Slovenia',
-            'Solomon Islands',
-            'Somalia',
-            'South Africa',
-            'South Sudan',
-            'Spain',
-            'Sri Lanka',
-            'Sudan',
-            'Suriname',
-            'Sweden',
-            'Switzerland',
-            'Syria',
-            'Taiwan',
-            'Tajikistan',
-            'Tanzania',
-            'Thailand',
-            'Togo',
-            'Tonga',
-            'Trinidad and Tobago',
-            'Tunisia',
-            'Turkey',
-            'Turkmenistan',
-            'Tuvalu',
-            'Uganda',
-            'Ukraine',
-            'United Arab Emirates',
-            'United Kingdom',
-            'United States',
-            'Uruguay',
-            'Uzbekistan',
-            'Vanuatu',
-            'Vatican',
-            'Venezuela',
-            'Vietnam',
-            'Yemen',
-            'Zambia',
-            'Zimbabwe'
-        ];
+        $items = Buildings::distinct('country')->pluck('country');
 
         // Hashtags list
         $hashtags = ['#meeting_room', '#conference_room', '#ha_noi', '#da_nang', '#ho_chi_minh'];
@@ -227,9 +31,20 @@ class CategoryController extends Controller
         // Query cơ bản
         $queryBuilder = Rooms::query();
 
+        $overallMinPrice = Rooms::min('price');
+        $overallMaxPrice = Rooms::max('price');
+
+        $filteredMinPrice = $queryBuilder->min('price') ?? $overallMinPrice;
+        $filteredMaxPrice = $queryBuilder->max('price') ?? $overallMaxPrice;
+
         // Lọc theo từ khóa tìm kiếm
         if ($query) {
-            $queryBuilder->where('name', 'like', '%' . $query . '%');
+            $queryBuilder->where(function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('tags', 'like', '%' . $query . '%')
+                    ->orWhere('furniture', 'like', '%' . $query . '%')
+                    ->orWhere('description', 'like', '%' . $query . '%');
+            });
         }
 
         // Lọc theo hashtag (nếu có)
@@ -245,16 +60,24 @@ class CategoryController extends Controller
         }
 
         // Lọc theo ngày
-        if ($startAt) {
-            $queryBuilder->whereDate('startAt', '>=', $startAt);
-        }
-        if ($endAt) {
-            $queryBuilder->whereDate('endAt', '<=', $endAt);
+        if ($startAt && $endAt) {
+            $queryBuilder->whereDoesntHave('bookings', function ($q) use ($startAt, $endAt) {
+                $q->where(function ($query) use ($startAt, $endAt) {
+                    $query->whereBetween('startAt', [$startAt, $endAt])
+                        ->orWhereBetween('endAt', [$startAt, $endAt])
+                        ->orWhere(function ($query) use ($startAt, $endAt) {
+                            $query->where('startAt', '<=', $startAt)
+                                ->where('endAt', '>=', $endAt);
+                        });
+                });
+            });
         }
 
         // Lọc theo địa điểm
         if ($country) {
-            $queryBuilder->where('tags', 'like', '%' . $country . '%');
+            $queryBuilder->whereHas('building', function ($q) use ($country) {
+                $q->where('country', $country);
+            });
         }
 
         // Lọc theo số người, bàn, ghế
@@ -361,8 +184,10 @@ class CategoryController extends Controller
             'products' => $products,
             'items' => $items,
             'hashtags' => $hashtags,
-            'minPrice' => $queryBuilder->min('price') ?? 0,
-            'maxPrice' => $queryBuilder->max('price') ?? 2000,
+            'minPrice' => $overallMinPrice, // Giá trị tối thiểu toàn bộ
+            'maxPrice' => $overallMaxPrice, // Giá trị tối đa toàn bộ
+            'filteredMinPrice' => $filteredMinPrice, // Giá trị tối thiểu theo bộ lọc
+            'filteredMaxPrice' => $filteredMaxPrice,
             'filters' => $request->all(), // Truyền toàn bộ dữ liệu từ request
             'selectedTag' => $tag, // Tag được chọn (nếu có)
         ]);

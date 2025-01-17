@@ -250,6 +250,8 @@ class UserController extends Controller
             $timeLeft = $lockTime - $currentTime;
             return redirect()->route('verify.otp.form')->with('otp_locked', "Your account is locked. Please try again in $timeLeft seconds.");
         }
+
+        return redirect()->route('reset.password')->with('otp', 'otpTime');
     }
 
     public function resendOtp()

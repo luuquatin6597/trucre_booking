@@ -46,7 +46,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png')}}" />
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png')}}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>

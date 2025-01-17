@@ -10,7 +10,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="{{$formId}}" action="" method="POST">
+                <form id="{{$formId}}" action="" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     {{$slot}}
@@ -19,7 +19,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button form="{{$formId}}" type="submit" class="btn btn-primary">Add</button>
+                <button form="{{$formId}}" type="submit" class="btn btn-primary">Save</button>
             </div>
 
             @if ($errors->any())

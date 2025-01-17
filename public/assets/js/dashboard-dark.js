@@ -498,68 +498,61 @@ $(function() {
 
 
 $(function () {
-    // User & Owner Chart
-    var userCount = window.userCount;
-    var ownerCount = window.ownerCount;
-    var userRole = window.userRole;
-    if ($('#storageChart').length) {
-        let ownerLabel = "Owners";
-        if(userRole === "admin"){
-            ownerLabel = "Total Owner";
-        }
-        var options = {
-        chart: {
-            height: 260,
-            type: "radialBar"
-        },
-        series: [ownerCount],
-        colors: [colors.primary],
-        plotOptions: {
-            radialBar: {
-            hollow: {
-                margin: 15,
-                size: "70%"
-            },
-            track: {
-                show: true,
-                background: colors.dark,
-                strokeWidth: '100%',
-                opacity: 1,
-                margin: 5, 
-            },
-            dataLabels: {
-                showOn: "always",
-                name: {
-                offsetY: -11,
-                show: true,
-                color: colors.muted,
-                fontSize: "13px"
-                },
-                value: {
-                color: colors.bodyColor,
-                fontSize: "30px",
-                show: true
-                }
-            }
-            }
-        },
-        fill: {
-            opacity: 1
-        },
-        stroke: {
-            lineCap: "round",
-        },
-        labels: [ownerLabel]
-        };
-        var chart = new ApexCharts(document.querySelector("#storageChart"), options);
-        chart.render();    
-    }
+    // Revenue after comission & comission Chart
+if ($('#storageChart').length) {
+  var options = {
+      chart: {
+          height: 260,
+          type: "radialBar"
+      },
+      series: [window.userCount, window.ownerCount],
+      colors: [colors.primary, colors.secondary],
+      plotOptions: {
+          radialBar: {
+          hollow: {
+              margin: 15,
+              size: "70%"
+          },
+          track: {
+              show: true,
+              background: colors.dark,
+              strokeWidth: '100%',
+              opacity: 1,
+              margin: 5, 
+          },
+          dataLabels: {
+              showOn: "always",
+              name: {
+              offsetY: -11,
+              show: true,
+              color: colors.muted,
+              fontSize: "13px"
+              },
+              value: {
+              color: colors.bodyColor,
+              fontSize: "30px",
+              show: true
+              }
+          }
+          }
+      },
+      fill: {
+          opacity: 1
+      },
+      stroke: {
+          lineCap: "round",
+      },
+      labels: ["Revenue after comission", "Comission"]
+  };
+  var chart = new ApexCharts(document.querySelector("#storageChart"), options);
+  chart.render();    
+}
     // Monthly Booking Chart
     var monthlyBookingChartData = window.monthlyBookingChartData;
     var monthlyBookingChartCategories = window.monthlyBookingChartCategories;
 
     if (!monthlyBookingChartData || !monthlyBookingChartCategories || monthlyBookingChartData.length === 0 || monthlyBookingChartCategories.length === 0) {
-        console.error("Invalid monthly booking data:", monthlyBookingChartData, monthlyBookingChartCategories);
+        //console.error("Invalid monthly booking data:", monthlyBookingChartData, monthlyBookingChartCategories);
         return; // Dừng thực thi nếu dữ liệu không hợp lệ.
     }
 

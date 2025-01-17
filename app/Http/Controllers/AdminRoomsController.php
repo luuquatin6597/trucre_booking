@@ -17,10 +17,10 @@ class AdminRoomsController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            $rooms = Rooms::with('building')->get();
+            $rooms = Rooms::with('building', 'images')->get();
         } elseif ($user->role === 'owner') {
             $buildings = Buildings::where('user_id', $user->id)->pluck('id');
-            $rooms = Rooms::with('building')->whereIn('building_id', $buildings)->get();
+            $rooms = Rooms::with('building', 'images')->whereIn('building_id', $buildings)->get();
         } else {
             $rooms = collect();
         }
@@ -111,9 +111,41 @@ class AdminRoomsController extends Controller
             }
         }
 
-
         return view('admin.rooms.room-detail', compact('room', 'events'));
     }
+
+    public function getRoomModal($id)
+    {
+        $room = Rooms::findOrFail($id);
+
+        // Lấy danh sách ảnh liên quan (giả sử bạn có quan hệ images trong model Rooms)
+        $images = $room->images()->get()->map(function ($image) {
+            return [
+                'url' => asset($image->url), // Tạo đường dẫn đầy đủ
+            ];
+        });
+
+        // Trả về dữ liệu phòng kèm danh sách ảnh
+        return response()->json([
+            'id' => $room->id,
+            'name' => $room->name,
+            'type' => $room->type,
+            'description' => $room->description,
+            'price' => $room->price,
+            'comparePrice' => $room->comparePrice,
+            'allDayPrice' => $room->allDayPrice,
+            'sessionPrice' => $room->sessionPrice,
+            'maxChair' => $room->maxChair,
+            'maxTable' => $room->maxTable,
+            'maxPeople' => $room->maxPeople,
+            'tags' => $room->tags,
+            'furniture' => $room->furniture,
+            'startAt' => $room->startAt,
+            'endAt' => $room->endAt,
+            'images' => $images, // Danh sách ảnh
+        ]);
+    }
+
 
     public function addRoom(Request $request)
     {
@@ -131,7 +163,7 @@ class AdminRoomsController extends Controller
                 'startAt' => 'required|date',
                 'endAt' => 'required|date',
                 'building_id' => 'required|exists:buildings,id',
-                'status' => 'required|in:waiting',
+                'status' => 'required|in:waiting,active',
                 'allDayPrice' => 'required|numeric',
                 'sessionPrice' => 'required|numeric',
                 'type' => 'required|in:Meeting room,Conference room',
@@ -149,4 +181,53 @@ class AdminRoomsController extends Controller
             return redirect()->route('admin.rooms')->with('error', 'Failed to add room: ' . $e->getMessage());
         }
     }
+
+    public function updateRoom(Request $request, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'price' => 'required|numeric',
+                'comparePrice' => 'required|numeric',
+                'description' => 'required|string|max:2048',
+                'maxChair' => 'required|numeric',
+                'maxTable' => 'required|numeric',
+                'maxPeople' => 'required|numeric',
+                'tags' => 'required|string|max:2048',
+                'furniture' => 'required|string|max:2048',
+                'startAt' => 'required|date',
+                'endAt' => 'required|date',
+                'status' => 'required|in:waiting,active',
+                'allDayPrice' => 'required|numeric',
+                'sessionPrice' => 'required|numeric',
+                'type' => 'required|in:Meeting room,Conference room',
+            ]);
+
+            $room = Rooms::findOrFail($id);
+            $room->update($validatedData);
+
+            // Xử lý cập nhật hình ảnh nếu có
+            if ($request->hasFile('images')) {
+                $imageController = new AdminImagesController();
+                $imageController->storeImage($request, $room->id);
+            }
+
+            return redirect()->route('admin.rooms')->with('success', 'Room updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.rooms')->with('error', 'Failed to update room: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteRoom($id)
+    {
+        try {
+            $room = Rooms::findOrFail($id);
+            $room->status = 'inactive'; // Đặt trang thai của phòng lập trình là "deleted"();
+            $room->save();
+            return redirect()->route('admin.rooms')->with('success', 'Room deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.rooms')->with('error', 'Failed to delete room: ' . $e->getMessage());
+        }
+    }
+
 }

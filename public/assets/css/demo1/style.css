@@ -21257,9 +21257,7 @@ div.tox .btn-group-lg > .btn-icon-text.tox-button .btn-icon-append,
   white-space: nowrap;
 }
 .table td img {
-  width: 36px;
-  height: 36px;
-  border-radius: 100%;
+  width: 100px;
 }
 
 .timeline {

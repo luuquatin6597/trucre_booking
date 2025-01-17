@@ -138,6 +138,7 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
         // Gửi request để lấy thông tin user
         $.get(`/admin/users/${userId}`, function (user) {
             // Điền thông tin user vào form
+            console.log(user)
             var dayOfBirth = user.dayOfBirth.split(' ')[0];
 
             modal.find('[name="firstName"]').val(user.firstName);
@@ -214,14 +215,20 @@ $role = ['admin' => 'admin', 'user' => 'user', 'staff' => 'staff', 'owner' => 'o
     });
 
     function showAlert(type, message) {
-        var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show" role="alert">
+        var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show z-3" role="alert">
                     <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
                     <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
                  </div>`;
-        $('#alert-container').html(alert); // Thêm alert vào container
+        $('#alert-container').html(alert);
         setTimeout(function () {
-            $('.alert').alert('close'); // Đóng alert sau 5 giây
+            $('.alert').alert('close');
         }, 5000);
+    }
+
+    if ('{{ session()->has('success') }}') {
+        showAlert('success', '{{ session()->get('success') }}');
+    } else if ('{{ session()->has('error') }}') {
+        showAlert('error', '{{ session()->get('error') }}');
     }
 </script>
 @endsection

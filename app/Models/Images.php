@@ -11,4 +11,9 @@ class Images extends Model
         'room_id',
         'url'
     ];
+
+    public function room()
+    {
+        return $this->belongsTo(Rooms::class);
+    }
 }

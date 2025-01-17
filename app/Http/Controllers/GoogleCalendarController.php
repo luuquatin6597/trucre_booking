@@ -111,49 +111,6 @@ class GoogleCalendarController extends Controller
         return redirect()->intended($url)->with('success', 'You have successfully logged in.');
     }
 
-    public function createEvent()
-    {
-        try {
-            // Lấy token từ session
-            $token = Session::get('google_access_token');
-
-            if (!$token) {
-                return redirect()->route('google.login')->with('error', 'Please connect your Google account first.');
-            }
-
-            // Thiết lập token
-            $this->googleClientService->setAccessToken($token);
-
-            // Tạo sự kiện
-            $event = new Event([
-                'summary' => 'Test Event',
-                'location' => '123 Example Street, City',
-                'description' => 'Event description',
-                'start' => [
-                    'dateTime' => '2025-01-12T09:00:00+07:00',
-                    'timeZone' => 'Asia/Ho_Chi_Minh',
-                ],
-                'end' => [
-                    'dateTime' => '2025-01-12T10:00:00+07:00',
-                    'timeZone' => 'Asia/Ho_Chi_Minh',
-                ],
-            ]);
-
-            // Sử dụng Google Calendar API
-            $calendarService = $this->googleClientService->getCalendarService();
-            $calendarId = 'primary'; // Sử dụng lịch chính
-            $createdEvent = $calendarService->events->insert($calendarId, $event);
-
-            // Xử lý kết quả
-            return redirect()->route('homepage')->with('success', 'Event created successfully!');
-        } catch (\Exception $e) {
-            // Log lỗi và thông báo cho người dùng
-            dd($e);
-            Log::error('Failed to create event: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            return redirect()->route('homepage')->with('error', 'Failed to create event. Please try again.');
-        }
-    }
-
     public function createCalendarEvent($transaction, $room, $building, $booking)
     {
 

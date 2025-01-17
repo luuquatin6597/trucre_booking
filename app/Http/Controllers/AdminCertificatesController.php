@@ -13,7 +13,7 @@ class AdminCertificatesController extends Controller
     public function index()
     {
         $certificates = Certificates::with('building')->get();
-        // Trả dữ liệu về view
+
         return view('admin.Admin-certificates', compact('certificates'));
     }
 
@@ -32,10 +32,7 @@ class AdminCertificatesController extends Controller
         $building->status = 'active'; // Cập nhật trạng thái thành "approved"
         $building->save(); // Lưu vào database
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Certificate accepted successfully!',
-        ]);
+        return redirect()->route('admin.certificates')->with('success', 'Certificate accepted successfully!');
     }
 
     // Từ chối chứng chỉ (reject)
@@ -66,7 +63,7 @@ class AdminCertificatesController extends Controller
             $building = Buildings::findOrFail($id);
             $request->validate([
                 'certificates' => 'required',
-                'certificates.*' => 'required|file|mimes:jpeg,png,jpg,pdf',
+                'certificates.*' => 'required|file|mimes:jpeg,png,jpg,pdf,avif|max:3000',
             ]);
 
             $certificateData = [];

@@ -22,8 +22,8 @@ class PaypalController extends Controller
     {
         $this->googleCalendarController = $googleCalendarController;
         $this->gateway = Omnipay::create('PayPal_Rest');
-        $this->gateway->setClientId('AfoRXsjbzH4rcUDJHM6LSfYkGgD85E9MJw23xqn8xmjXkZokGoy12pxnr8cDDTTH9v8VNzlcJBtLn6Sj');
-        $this->gateway->setSecret('EH7iw2jcKHjNGhUzxXfYjNcTeSqgaGaQV8Hd9IY2U_-QxWws3yD8nnkQhAjpYWiACdkoiJfGd0HlIjga');
+        $this->gateway->setClientId(env('PAYPAL_CLIENT_ID'));
+        $this->gateway->setSecret(env('PAYPAL_CLIENT_SECRECT'));
         $this->gateway->setTestMode(true);
     }
 

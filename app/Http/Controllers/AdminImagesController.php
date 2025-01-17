@@ -23,7 +23,7 @@ class AdminImagesController extends Controller
             $room = Rooms::findOrFail($id);
             $request->validate([
                 'images' => 'required|max:3000',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:3000',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:3000',
             ]);
 
             $imageData = [];

@@ -39,7 +39,10 @@ class AdminController extends Controller
         $userCount = $userOwnerCounts['userCount'];
         $ownerCount = $userOwnerCounts['ownerCount'];
 
-        return view('admin.admin-dashboard', compact('totalBookings', 'totalRevenue', 'totalRooms', 'totalBuildings', 'revenueChartData', 'revenueChartCategories', 'selectedPeriod', 'monthlyBookingChartData', 'monthlyBookingChartCategories', 'userCount', 'ownerCount', 'role'));
+        $comission = (Bookings::sum('totalPrice') - Bookings::sum('tax')) * 0.05;
+        $revenueAfterComission = Bookings::sum('totalPrice') - $comission;
+
+        return view('admin.admin-dashboard', compact('totalBookings', 'totalRevenue', 'totalRooms', 'totalBuildings', 'revenueChartData', 'revenueChartCategories', 'selectedPeriod', 'monthlyBookingChartData', 'monthlyBookingChartCategories', 'userCount', 'ownerCount', 'role', 'comission', 'revenueAfterComission'));
     }
 
     private function getRevenueData($period)

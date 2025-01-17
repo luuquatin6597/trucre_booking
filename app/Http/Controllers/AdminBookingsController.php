@@ -41,6 +41,31 @@ class AdminBookingsController extends Controller
 
         $booking = $query->firstOrFail();
 
-        return view('admin.bookings.booking-detail', compact('booking'));
+        $profit = $this->calculateProfit($id);
+
+        return view('admin.bookings.booking-detail', compact('booking', 'profit'));
+    }
+
+    public function calculateProfit($bookingId)
+    {
+        // Lấy thông tin booking theo ID
+        $booking = Bookings::find($bookingId);
+
+        // Tính toán lợi nhuận và tiền hoa hồng
+        if ($booking) {
+            $totalPrice = $booking->totalPrice;
+            $tax = $booking->tax;
+            $priceAfterTax = $totalPrice - $tax;
+
+            // Tính tiền hoa hồng 5% của sàn
+            $commission = $priceAfterTax * 0.05;
+
+            // Tính lợi nhuận
+            $profit = $priceAfterTax - $commission;
+
+            return ['commission' => $commission, 'profit' => $profit];
+        }
+
+        return redirect()->back()->with('error', 'Booking not found!');
     }
 }

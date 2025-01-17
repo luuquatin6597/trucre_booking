@@ -70,9 +70,11 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
 
 Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::get('/admin/rooms', [AdminRoomsController::class, 'AdminRooms'])->name('admin.rooms');
+    Route::get('/admin/rooms/modal/{id}', [AdminRoomsController::class, 'getRoomModal'])->name('admin.rooms.modal');
     Route::get('/admin/rooms/{id}', [AdminRoomsController::class, 'getRoom'])->name('admin.rooms.get');
     Route::post('/admin/rooms/add', [AdminRoomsController::class, 'addRoom'])->name('admin.rooms.add');
     Route::put('/admin/rooms/{id}', [AdminRoomsController::class, 'updateRoom'])->name('admin.rooms.update');
+
     Route::delete('/admin/rooms/{id}', [AdminRoomsController::class, 'deleteRoom'])->name('admin.rooms.destroy');
     Route::get('/admin/rooms/{id}/upload', [AdminImagesController::class, 'uploadImage'])->name('admin.rooms.upload');
     Route::post('/admin/rooms/{id}/upload', [AdminImagesController::class, 'storeImage'])->name('admin.rooms.store');

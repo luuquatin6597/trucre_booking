@@ -31,6 +31,8 @@
             </div>
             <div
                 class="item relative overflow-hidden col-start-6 col-end-8 row-start-1 row-end-1 rounded-15 bg-white before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:rounded-15 before:bg-[rgb(251,130,0,0.2)] before:w-full before:h-full before:z-[1]">
+                <img width="296" class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]"
+                    src="{{ asset('assets/img/trusted-4.png') }}" alt="">
             </div>
             <div
                 class="item relative overflow-hidden col-start-8 col-end-9 row-start-1 row-end-1 rounded-15 bg-white shadow-[0_4px_4px_-1px_rgb(0,0,0,0.1)]">

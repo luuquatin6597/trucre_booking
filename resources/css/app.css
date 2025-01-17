@@ -110,14 +110,17 @@ input[type="search"]::-webkit-search-results-decoration {
     display: none;
 }
 .status-active {
-    color: #2ecc71; /* Màu xanh lá */
-  }
+color: #2ecc71; /* Màu xanh lá */
+}
 
-  .status-waiting {
-    color: #3498db; /* Màu xanh dương */
-  }
+.status-waiting {
+color: #3498db; /* Màu xanh dương */
+}
 
-  .status-inactive {
-    color: #e74c3c; /* Màu đỏ */
-  }
+.status-inactive {
+color: #e74c3c; /* Màu đỏ */
+}
 
+.card-item .location:hover svg path {
+    fill: #fff;
+}

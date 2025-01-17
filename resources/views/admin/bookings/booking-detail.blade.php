@@ -43,6 +43,12 @@
                     <p class="mb-3"><strong>Total Price:</strong>
                         {{ format_currency($booking->totalPrice * getExchangeRate($booking->currency, 'USD'), 'USD') }}
                     </p>
+                    <p class="mb-3"><strong>Commission:</strong>
+                        {{ format_currency($profit['commission'] * getExchangeRate($booking->currency, 'USD'), 'USD') }}
+                    </p>
+                    <p class="mb-3"><strong>Profit after commission:</strong>
+                        {{ format_currency($profit['profit'] * getExchangeRate($booking->currency, 'USD'), 'USD') }}
+                    </p>
                 </div>
             </div>
         </div>

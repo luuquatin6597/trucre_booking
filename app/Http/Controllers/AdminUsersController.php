@@ -61,7 +61,6 @@ class AdminUsersController extends Controller
         return response()->json($user);
     }
 
-
     public function updateUser(Request $request, $id)
     {
         try {
@@ -117,26 +116,9 @@ class AdminUsersController extends Controller
     }
 
     public function logout(Request $request)
-{
-    Auth::logout();
-    return redirect()->route('login');
+    {
+        Auth::logout();
+        return redirect()->route('login');
 
-}
-
-// public function switchAccount(Request $request)
-// {
-//     $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
-//     if ($user && ($user->role == 'admin' || $user->role == 'owner')) {
-//         $role = $request->input('role');
-//         if ($user->role == $role) {
-//             return redirect()->back()->with('error', 'Bạn đã có vai trò này!');
-//         } else {
-//             $user->update(['role' => $role]); // Cập nhật vai trò
-//             return redirect()->back()->with('success', 'Vai trò đã được switch!');
-//         }
-//     } else {
-//         return redirect()->back()->with('error', 'Bạn không có quyền vào chức năng này!');
-//     }
-// }
-
+    }
 }

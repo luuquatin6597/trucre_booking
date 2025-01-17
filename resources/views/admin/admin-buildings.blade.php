@@ -13,25 +13,31 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
             disabled="true"
             value="{{ Auth::user()->id . ' - ' . Auth::user()->firstName . ' ' . Auth::user()->lastName }}" />
         <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}" />
+        <input type="hidden" name="status" value="waiting" id="status" />
     @elseif (Auth::user()->role == 'admin')
         <div class="form-group">
-            <label for="user_id">Select user</label>
+            <label for="userNameInput">Select user</label>
             <input type="text" class="form-control" id="userNameInput" name="userNameInput" placeholder="Select user" />
             <input type="hidden" name="user_id" id="user_id" />
+            <input type="hidden" name="status" value="active" id="status" />
         </div>
     @endif
     <x-input-group name="name" label="Name" placeholder="Enter name" type="text" required="true" />
     <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
     <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
-    <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
-    <x-textarea-group name="map_link" label="Map" placeholder="Enter map" required="true" />
+    <x-select-group name="country" label="Country" :options="$listCountry" required="true" />
+    <!-- <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" /> -->
+    <x-textarea-group name="map" label="Map" placeholder="Enter map" required="true" />
     <x-input-group name="certificates[]" label="Certificate" placeholder="Enter certificate" type="file"
         required="true" />
-    <input type="hidden" name="status" value="waiting" id="status" />
 </x-modal-add>
 
 <script>
     $(document).ready(function () {
+        setTimeout(function () {
+            $('#alert-success').fadeOut();
+        }, 2000);
+
         $('input[type="file"]').on('change', function () {
             var files = this.files;
             var images = [];
@@ -58,7 +64,6 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
             <th>Address</th>
             <th>Country</th>
             <th>Map</th>
-            <th>Certificate</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -70,16 +75,21 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
             @foreach ($buildings as $key => $building)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $building->id }}</td>
+                    <td><a href="{{ route('admin.buildings.get', $building->id) }}">{{ $building->id }}</a></td>
                     <td>
                         <a
                             href="{{ route('admin.users.get', $building->user->id) }}">{{ $building->user->firstName . ' ' . $building->user->lastName }}</a>
                     </td>
                     <td>{{ $building->name }}</td>
-                    <td>{{ $building->description }}</td>
+                    <td>
+                        <div
+                            style="width: 250px;white-space: normal;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;">
+                            {{ $building->description }}
+                        </div>
+                    </td>
                     <td>{{ $building->address }}</td>
                     <td>{{ $building->country }}</td>
-                    <td>{{ $building->map_link }}</td>
+                    <td><a href="{{ $building->map }}" title="{{ $building->name }}">Click here to see map</a></td>
 
                     <td class="status-{{ $building->status }}">{{ $building->status }}</td>
                     <td>
@@ -104,6 +114,23 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script>
     $(document).ready(function () {
+        function showAlert(type, message) {
+            var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show z-3" role="alert">
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                    <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
+                 </div>`;
+            $('#alert-container').html(alert);
+            setTimeout(function () {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+
+        if ('{{ session()->has('success') }}') {
+            showAlert('success', '{{ session()->get('success') }}');
+        } else if ('{{ session()->has('error') }}') {
+            showAlert('error', '{{ session()->get('error') }}');
+        }
+
         $('#userNameInput').autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -133,25 +160,15 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
                 $('.ui-autocomplete').css('position', 'absolute');
             }
         });
-
-        function showAlert(type, message) {
-            var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show" role="alert">
-                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
-                    <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
-                 </div>`;
-            $('#alert-container').html(alert);
-            setTimeout(function () {
-                $('.alert').alert('close');
-            }, 5000);
-        }
     });
 </script>
+
 <x-modal-edit modalTitle="Edit Building" modalId="editBuildingModal" formId="editBuildingForm">
     <x-input-group name="name" label="Name" placeholder="Enter building name" type="text" required="true" />
     <x-textarea-group name="description" label="Description" placeholder="Enter description" required="true" />
     <x-input-group name="address" label="Address" placeholder="Enter address" type="text" required="true" />
     <x-input-group name="country" label="Country" placeholder="Enter country" type="text" required="true" />
-    <x-textarea-group name="map_link" label="Map" placeholder="Enter map link or embed code" required="true" />
+    <x-textarea-group name="map" label="Map" placeholder="Enter map link or embed code" required="true" />
     <x-input-group name="certificate" label="Certificate" placeholder="Enter certificate" type="file" required="true" />
     <x-select-group name="status" label="Status" placeholder="Enter status" :options="$status" required="true" />
 </x-modal-edit>
@@ -174,37 +191,12 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
             modal.find('[name="description"]').val(building.description);
             modal.find('[name="address"]').val(building.address);
             modal.find('[name="country"]').val(building.country);
-            modal.find('[name="map_link"]').val(building.map_link);
+            modal.find('[name="map"]').val(building.map);
             modal.find('[name="certificate"]').val(building.certificate);
             modal.find('[name="status"]').val(building.status);
             modal.find('form').attr('action', actionUrlTemplate);
         });
     });
-
-    // $('#editBuildingForm').submit(function (event) {
-    //     event.preventDefault();
-
-    //     var form = $(this);
-    //     var url = form.attr('action');
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: url,
-    //         data: form.serialize(),
-    //         success: function (response) {
-    //             $('#editBuildingModal').modal('hide');
-    //             $('.modal-backdrop').remove();
-    //             $('body').removeClass('modal-open');
-    //             showAlert('success', 'Building updated successfully.');
-    //         },
-    //         error: function (xhr) {
-    //             $('#deleteBuildingModal').modal('dispose');
-    //             var error = xhr.responseJSON?.message || 'An error occurred!';
-    //             showAlert('danger', error);
-    //         }
-    //     });
-    // });
-
 
     $('#deleteBuildingModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
@@ -214,40 +206,5 @@ $status = ['active' => 'active', 'inactive' => 'inactive'];
 
         modal.find('form').attr('action', actionUrlTemplate);
     });
-
-    // $('#deleteBuildingForm').submit(function (event) {
-    //     event.preventDefault();
-
-    //     var form = $(this);
-    //     var url = form.attr('action');
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: url,
-    //         data: form.serialize(),
-    //         success: function (response) {
-    //             $('#deleteBuildingModal').modal('hide');
-    //             $('.modal-backdrop').remove();
-    //             $('body').removeClass('modal-open');
-    //             showAlert('success', 'Building deleted successfully.');
-    //         },
-    //         error: function (xhr) {
-    //             $('#deleteBuildingModal').modal('hide');
-    //             var error = xhr.responseJSON?.message || 'An error occurred!';
-    //             showAlert('danger', error);
-    //         }
-    //     });
-    // });
-
-    function showAlert(type, message) {
-        var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show" role="alert">
-                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
-                    <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
-                 </div>`;
-        $('#alert-container').html(alert);
-        setTimeout(function () {
-            $('.alert').alert('close');
-        }, 5000);
-    }
 </script>
 @endsection

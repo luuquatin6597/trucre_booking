@@ -89,24 +89,24 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0">USER & OWNER</h6>
+                    <h6 class="card-title mb-0">REVENUE AFTER COMISSION & COMISSION</h6>
                 </div>
-                <div id="storageChart"></div>
-                <div class="row mb-3">
-                    <div class="col-6 d-flex justify-content-end">
+                <!-- <div id="storageChart"></div> -->
+                <div class="row my-3">
+                    <div class="col-12">
                         <div>
-                            <label
-                                class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total
-                                User <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
-                            <h5 class="fw-bolder mb-0 text-end">{{ $userCount }}</h5>
+                            <label class="text-uppercase fw-bolder">COMISSION</label>
+                            <h5 class="fw-bolder mb-0">
+                                {{ format_currency($comission * getExchangeRate('USD', session('currency')), session('currency')) }}
+                            </h5>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 mt-5">
                         <div>
-                            <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span
-                                    class="p-1 me-1 rounded-circle bg-primary"></span> Total Users
-                            </label>
-                            <h5 class="fw-bolder mb-0">{{ $userCount }}</h5>
+                            <label class="text-uppercase fw-bolder">REVENUE AFTER COMISSION</label>
+                            <h5 class="fw-bolder mb-0">
+                                {{ format_currency($revenueAfterComission * getExchangeRate('USD', session('currency')), session('currency')) }}
+                            </h5>
                         </div>
                     </div>
                 </div>
@@ -115,15 +115,32 @@
     </div>
 </div> <!-- row -->
 
+<div id="alert-container"></div>
+
 <script>
-    window.userCount = @json($userCount);
-    window.ownerCount = @json($ownerCount);
+    function showAlert(type, message) {
+        var alert = `<div class="fixed bottom-1 right-1 alert alert-${type} alert-dismissible fade show z-3" role="alert">
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                    <button type="button" class="btn-close py-0 h-100" data-bs-dismiss="alert" aria-label="Close"></button>
+                 </div>`;
+        $('#alert-container').html(alert);
+        setTimeout(function () {
+            $('.alert').alert('close');
+        }, 5000);
+    }
+
+    if ('{{ session()->has('success') }}') {
+        showAlert('success', '{{ session()->get('success') }}');
+    } else if ('{{ session()->has('error') }}') {
+        showAlert('error', '{{ session()->get('error') }}');
+    }
+
     window.userRole = @json($role);
     var revenueChartData = @json($revenueChartData);
     var revenueChartCategories = @json($revenueChartCategories);
     window.monthlyBookingChartData = @json($monthlyBookingChartData);
     window.monthlyBookingChartCategories = @json($monthlyBookingChartCategories);
-    window.userCount = @json($userCount);
-    window.ownerCount = @json($ownerCount);
+    window.userCount = @json($revenueAfterComission);
+    window.ownerCount = @json($comission);
 </script>
 @endsection
